@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+@theme {
+  /* Backgrounds */
+  --color-bg-primary: #050508;
+  --color-bg-secondary: #080b12;
+  --color-bg-card: #0d1117;
+  --color-bg-glass: #0d1117;
+  
+  /* Primary Colors */
+  --color-primary: #2563eb;
+  --color-primary-light: #1d4ed8;
+  --color-secondary: #7c3aed;
+  --color-teal: #0f766e;
+  
+  /* Neutrals */
+  --color-fg-primary: #ffffff;
+  --color-fg-secondary: #94a3b8;
+  --color-fg-muted: #64748b;
+  --color-fg-muted-2: #475569;
+  --color-fg-muted-3: #334155;
+  
+  /* Borders & Status */
+  --color-border: #1e293b;
+  --color-success: #10b981;
+  --color-dot: #10b981;
+  
+  /* Opacity variants */
+  --color-primary/20: rgba(37, 99, 235, 0.2);
+  --color-primary/40: rgba(37, 99, 235, 0.4);
+  --color-primary/50: rgba(37, 99, 235, 0.5);
+  --color-primary/55: rgba(37, 99, 235, 0.55);
+}
+
+*{
+    /* font-family: "New Rocker", system-ui; */
+    /* font-family: "Manrope", sans-serif; */
+    /* font-family: "Montserrat", sans-serif; */
+     font-family: "Syne", sans-serif;
+     box-sizing: border-box;
+  }
+
+  @layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+  }
+  .box-glow {
+    box-shadow: 0 0 40px rgba(37, 99, 235, 0.15);
+  }
+}
+/* Custom marquee animation - SLOWER */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 50s linear infinite; /* NOW IT WORKS! */
+}
+.bg-gradient-fade-l {
+  background: linear-gradient(to right, var(--color-bg-secondary), transparent);
+}
+
+.bg-gradient-fade-r {
+  background: linear-gradient(to left, var(--color-bg-secondary), transparent);
+}
+
+@layer utilities {
+  .bg-gradient-fintech { 
+    background: linear-gradient(to bottom right, #1e3a8a, var(--color-bg-primary)); 
+  }
+  .bg-gradient-ecommerce { 
+    background: linear-gradient(to bottom right, #7c3aed, var(--color-bg-primary)); 
+  }
+  .bg-gradient-brand { 
+    background: linear-gradient(to bottom right, #10b981, var(--color-bg-primary)); 
+  }
+}
+
+.shadow-glow {
+  filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.6));
+}
+.bg-gradient-radial {
+  background: radial-gradient(circle at 30% 30%, var(--color-primary) 0%, transparent 50%);
+}

@@ -1,0 +1,47 @@
+
+import './App.css'
+import { Footer } from './components/Footer'
+// import { DotGridBackground } from './components/DotGridBackground'
+import { LogoStrip } from './components/LogoStrip'
+import { Navbar } from './components/Navbar'
+import { AboutSection } from './pages/AboutSection'
+import ContactSection from './pages/Contactsection'
+import { FAQSection } from './pages/FAQSection'
+import HeroSection from './pages/HeroSection'
+import PortfolioPage from './pages/PortfolioPage'
+import { PortfolioSection } from './pages/PortfolioSection'
+import ProjectDetails from './pages/Projectdetails.JSX'
+import ReadyToStart from './pages/ReadyToStart'
+import { ServicesSection } from './pages/ServiceSection'
+import SkillsBentoGrid from './pages/SkillsBentoGrid'
+import SkillsBentoGrid1 from './pages/SkillsBentoGrid1'
+import { TestimonialsSection } from './pages/TestimonialsSection'
+
+function App() {
+
+  return (
+    <>
+    <Navbar/>
+    {/* <DotGridBackground/> */}
+    <HeroSection/>
+    <LogoStrip/>
+    <AboutSection/>
+    
+    <ServicesSection/>
+    <PortfolioSection/>
+    <TestimonialsSection/>
+    <FAQSection/>
+    <ReadyToStart/>
+    <PortfolioPage/>
+    <ProjectDetails/>
+    {/* <SkillsBentoGrid/> */}
+    <SkillsBentoGrid1/>
+    <ContactSection/>
+    <Footer/>
+
+    
+    </>
+  )
+}
+
+export default App
