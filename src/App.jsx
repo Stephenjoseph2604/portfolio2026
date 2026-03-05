@@ -9,6 +9,7 @@ import CertificationsPage from './pages/Certificationspage'
 import ContactSection from './pages/Contactsection'
 import ExperienceEducation from './pages/Experienceeducation'
 import { FAQSection } from './pages/FAQSection'
+import Gallery from './pages/Gallery'
 import HeroSection from './pages/HeroSection'
 import HobbiesPage from './pages/Hobbiespage'
 import PortfolioPage from './pages/PortfolioPage'
@@ -26,8 +27,10 @@ function App() {
   return (
     <>
     <Navbar/>
+    <Gallery/>
     {/* <DotGridBackground/> */}
-    <HeroSection/>
+     {/* <SkillsBentoGrid/> */}
+    {/* <HeroSection/>
     <LogoStrip/>
     <AboutSection/>
     
@@ -38,14 +41,14 @@ function App() {
     <ReadyToStart/>
     <PortfolioPage/>
     <ProjectDetails/>
-    {/* <SkillsBentoGrid/> */}
+   
     <SkillsBentoGrid1/>
     <ExperienceEducation/>
     <WorkExperience/>
     <CertificationsPage/>
     <HobbiesPage/>
     <ContactSection/>
-    <Footer/>
+    <Footer/> */}
 
     
     </>
