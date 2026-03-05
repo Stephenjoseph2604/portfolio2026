@@ -14,7 +14,7 @@ import HeroSection from "./pages/HeroSection";
 import HobbiesPage from "./pages/Hobbiespage";
 import PortfolioPage from "./pages/PortfolioPage";
 import { PortfolioSection } from "./pages/PortfolioSection";
-import ProjectDetails from "./pages/ProjectDetails.JSX";
+// import ProjectDetails from "./pages/ProjectDetails.JSX";
 import ReadyToStart from "./pages/ReadyToStart";
 import { ServicesSection } from "./pages/ServiceSection";
 // import SkillsBentoGrid from "./pages/SkillsBentoGrid";
@@ -59,7 +59,7 @@ function App() {
             <>
               <PortfolioPage />
 
-              <ProjectDetails />
+              {/* <ProjectDetails /> */}
               <SkillsBentoGrid1 />
               <CertificationsPage />
 
