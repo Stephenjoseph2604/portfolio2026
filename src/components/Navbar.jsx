@@ -196,10 +196,10 @@ function toRgba(hex, a) {
 /* ─── Nav links ───────────────────────────────────────────── */
 const navLinks = [
   { name: "Home",      path: "/",         Icon: HomeIcon    },
-  { name: "About",     path: "/#about",   Icon: Info        },
+  { name: "About",     path: "/about",   Icon: Info        },
   { name: "Portfolio", path: "/portfolio",Icon: User2       },
   { name: "Contact",   path: "/contact",  Icon: Contact2    },
-  { name: "FAQ",       path: "/#faq",     Icon: CircleHelp  },
+  { name: "Others",       path: "/others",     Icon: CircleHelp  },
 ];
 
 /* ─── Desktop nav link ────────────────────────────────────── */

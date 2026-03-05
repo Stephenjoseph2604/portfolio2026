@@ -357,6 +357,8 @@ function CTAButton() {
 /* ─── Main Component ──────────────────────────── */
 const ReadyToStart = () => {
   return (
+    <>
+    <div className="bg-bg-primary">
     <div
       className="relative  overflow-hidden rounded-3xl border border-[#1e293b] bg-[#080b12] p-8 md:p-12 lg:p-16"
       style={{ boxShadow: `0 0 0 1px ${toRgba(PRIMARY, 0.08)}, 0 40px 80px rgba(0,0,0,0.5)` }}
@@ -489,6 +491,8 @@ const ReadyToStart = () => {
         </p>
       </motion.div>
     </div>
+    </div>
+    </>
   );
 };
 

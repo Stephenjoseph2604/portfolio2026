@@ -1,3 +1,4 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Footer } from "./components/Footer";
 // import { DotGridBackground } from './components/DotGridBackground'
@@ -13,40 +14,81 @@ import HeroSection from "./pages/HeroSection";
 import HobbiesPage from "./pages/Hobbiespage";
 import PortfolioPage from "./pages/PortfolioPage";
 import { PortfolioSection } from "./pages/PortfolioSection";
-import ProjectDetails from "./pages/Projectdetails.JSX";
+import ProjectDetails from "./pages/ProjectDetails.JSX";
 import ReadyToStart from "./pages/ReadyToStart";
 import { ServicesSection } from "./pages/ServiceSection";
 // import SkillsBentoGrid from "./pages/SkillsBentoGrid";
 import SkillsBentoGrid1 from "./pages/SkillsBentoGrid1";
 import { TestimonialsSection } from "./pages/TestimonialsSection";
+import ScrollToTop from "./components/ScrollToTop";
 // import WorkExperience from "./pages/Workexperience";
 
 function App() {
   return (
     <>
+    <ScrollToTop/>
       <Navbar />
 
       {/* <DotGridBackground/> */}
       {/* <SkillsBentoGrid/> */}
-      <HeroSection />
-      <LogoStrip />
-      <AboutSection />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <HeroSection />
+              <LogoStrip />
+              <ServicesSection />
+              <PortfolioSection />
+            </>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <>
+              <AboutSection />
+              <TestimonialsSection />
+            </>
+          }
+        />
 
-      <ServicesSection />
-      <PortfolioSection />
-      <TestimonialsSection />
+        <Route
+          path="/portfolio"
+          element={
+            <>
+              <PortfolioPage />
+
+              <ProjectDetails />
+              <SkillsBentoGrid1 />
+              <CertificationsPage />
+
+              <ExperienceEducation />
+            </>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <>
+              <ContactSection />
+            </>
+          }
+        />
+        <Route
+          path="/others"
+          element={
+            <>
+              <HobbiesPage />
+              <Gallery />
+            </>
+          }
+        />
+      </Routes>
+
       <FAQSection />
       <ReadyToStart />
-      <PortfolioPage />
-      <ProjectDetails />
-
-      <SkillsBentoGrid1 />
-      <ExperienceEducation />
       {/* <WorkExperience /> */}
-      <CertificationsPage />
-      <HobbiesPage />
-      <Gallery />
-      <ContactSection />
       <Footer />
     </>
   );
