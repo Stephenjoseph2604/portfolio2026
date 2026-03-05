@@ -5,9 +5,12 @@ import { Footer } from './components/Footer'
 import { LogoStrip } from './components/LogoStrip'
 import { Navbar } from './components/Navbar'
 import { AboutSection } from './pages/AboutSection'
+import CertificationsPage from './pages/Certificationspage'
 import ContactSection from './pages/Contactsection'
+import ExperienceEducation from './pages/Experienceeducation'
 import { FAQSection } from './pages/FAQSection'
 import HeroSection from './pages/HeroSection'
+import HobbiesPage from './pages/Hobbiespage'
 import PortfolioPage from './pages/PortfolioPage'
 import { PortfolioSection } from './pages/PortfolioSection'
 import ProjectDetails from './pages/Projectdetails.JSX'
@@ -16,6 +19,7 @@ import { ServicesSection } from './pages/ServiceSection'
 import SkillsBentoGrid from './pages/SkillsBentoGrid'
 import SkillsBentoGrid1 from './pages/SkillsBentoGrid1'
 import { TestimonialsSection } from './pages/TestimonialsSection'
+import WorkExperience from './pages/Workexperience'
 
 function App() {
 
@@ -36,6 +40,10 @@ function App() {
     <ProjectDetails/>
     {/* <SkillsBentoGrid/> */}
     <SkillsBentoGrid1/>
+    <ExperienceEducation/>
+    <WorkExperience/>
+    <CertificationsPage/>
+    <HobbiesPage/>
     <ContactSection/>
     <Footer/>
 
