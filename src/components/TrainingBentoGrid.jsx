@@ -1,4 +1,3 @@
-
 // import { motion } from 'framer-motion';
 // import { Award, Code, Film, Palette, Search, Target, TrendingUp, Users,Zap, } from 'lucide-react';
 
@@ -98,7 +97,6 @@
 //   isLarge: false
 // }];
 
-
 // export default function TrainingBentoGrid() {
 //   // Assuming trainingItems array is defined elsewhere
 //   return (
@@ -112,7 +110,7 @@
 //         >
 //           Training Gallery
 //         </motion.h2>
-        
+
 //         <motion.p
 //           initial={{ opacity: 0, y: 20 }}
 //           whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +121,7 @@
 //           A glimpse into our immersive workshops, bootcamps, and collaborative
 //           sessions where ideas come to life.
 //         </motion.p>
-        
+
 //         <motion.div
 //           initial={{ opacity: 0, width: 0 }}
 //           whileInView={{ opacity: 1, width: '100px' }}
@@ -199,18 +197,21 @@
 //   );
 // }
 
-
-
-
-
 // ================== New =======================
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Award, Code, Film, Palette, Search, Target,
-  TrendingUp, Users, Zap,
+  Award,
+  Code,
+  Film,
+  Palette,
+  Search,
+  Target,
+  TrendingUp,
+  Users,
+  Zap,
 } from "lucide-react";
-
+import t5 from "../assets/training/t51.png";
 const trainingItems = [
   {
     id: 1,
@@ -222,16 +223,19 @@ const trainingItems = [
     icon: Users,
     accent: "#2563eb",
     isLarge: true,
+    image: t5,
   },
   {
     id: 2,
     title: "Design Sprint",
     category: "Process",
-    description: "Rapid prototyping and user testing compressed into high-output cycles.",
+    description:
+      "Rapid prototyping and user testing compressed into high-output cycles.",
     span: "col-span-1 row-span-1",
     icon: Zap,
     accent: "#7c3aed",
     isLarge: false,
+    image: t5,
   },
   {
     id: 3,
@@ -242,6 +246,7 @@ const trainingItems = [
     icon: Search,
     accent: "#0f766e",
     isLarge: false,
+    image: t5,
   },
   {
     id: 4,
@@ -253,6 +258,7 @@ const trainingItems = [
     icon: Award,
     accent: "#d97706",
     isLarge: false,
+    image: t5,
   },
   {
     id: 5,
@@ -264,16 +270,19 @@ const trainingItems = [
     icon: Palette,
     accent: "#e11d48",
     isLarge: false,
+    image: t5,
   },
   {
     id: 6,
     title: "Brand Strategy",
     category: "Strategy",
-    description: "Building cohesive brand narratives that resonate and convert.",
+    description:
+      "Building cohesive brand narratives that resonate and convert.",
     span: "col-span-1 row-span-1",
     icon: Target,
     accent: "#10b981",
     isLarge: false,
+    image: t5,
   },
   {
     id: 7,
@@ -285,26 +294,31 @@ const trainingItems = [
     icon: TrendingUp,
     accent: "#06b6d4",
     isLarge: false,
+    image: t5,
   },
   {
     id: 8,
     title: "Frontend Development",
     category: "Engineering",
-    description: "Bridging the gap between pixel-perfect design and production code.",
+    description:
+      "Bridging the gap between pixel-perfect design and production code.",
     span: "col-span-1 row-span-1",
     icon: Code,
     accent: "#f97316",
     isLarge: false,
+    image: t5,
   },
   {
     id: 9,
     title: "Motion Design",
     category: "Animation",
-    description: "Bringing interfaces to life with purposeful, delightful motion.",
+    description:
+      "Bringing interfaces to life with purposeful, delightful motion.",
     span: "col-span-1 row-span-1",
     icon: Film,
     accent: "#ec4899",
     isLarge: false,
+    image: t5,
   },
 ];
 
@@ -317,6 +331,7 @@ function toRgba(hex, a) {
 
 function TrainingCard({ item, index }) {
   const [hovered, setHovered] = useState(false);
+  const [imgErr, setImgErr] = useState(false); // ← NEW: graceful fallback
   const Icon = item.icon;
   const { accent, isLarge } = item;
 
@@ -326,7 +341,11 @@ function TrainingCard({ item, index }) {
       initial={{ opacity: 0, y: 28, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.6, delay: index * 0.055, ease: [0.16, 1, 0.3, 1] }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.055,
+        ease: [0.16, 1, 0.3, 1],
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -336,11 +355,83 @@ function TrainingCard({ item, index }) {
         transition: "box-shadow 0.4s ease",
       }}
     >
+      {/* ══════════════════════════════════════════════════════
+          NEW ①  — Full-card background image (subtle, always)
+          Sits behind every existing layer. Idle: near-invisible.
+          Hover: slightly brighter + slow zoom. Text stays safe.
+      ══════════════════════════════════════════════════════ */}
+      {item.image && !imgErr && (
+        <img
+          src={item.image}
+          alt={item.title}
+          draggable={false}
+          onError={() => setImgErr(true)}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+          style={{
+            opacity: hovered ? 0.6 : 0.4,
+            transform: hovered ? "scale(1.06)" : "scale(1.0)",
+            transition: "opacity 0.75s ease, transform 0.75s ease",
+            filter: "saturate(0.6) blur(0px)",
+          }}
+        />
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+          NEW ②  — Floating thumbnail (top-right corner)
+          Small cards → 64 × 44 px pill
+          Large cards → 110 × 74 px pill (more screen real-estate)
+          Animates in on hover, hidden at rest (opacity 0.45→1)
+      ══════════════════════════════════════════════════════ */}
+      {item.image && !imgErr && (
+        <motion.div
+          className="absolute z-20 overflow-hidden rounded-xl border pointer-events-none"
+          style={{
+            top: isLarge ? 20 : 16,
+            right: isLarge ? 20 : 16,
+            width: isLarge ? 110 : 64,
+            height: isLarge ? 74 : 44,
+            borderColor: hovered ? toRgba(accent, 0.65) : toRgba(accent, 0.2),
+            boxShadow: hovered ? `0 0 18px ${toRgba(accent, 0.4)}` : "none",
+            transition: "border-color 0.38s, box-shadow 0.38s",
+          }}
+          animate={{
+            opacity: hovered ? 1 : 0.75,
+            y: hovered ? 0 : 5,
+            scale: hovered ? 1 : 0.96,
+          }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <img
+            src={item.image}
+            alt=""
+            draggable={false}
+            className="w-full h-full object-cover"
+          />
+          {/* accent colour wash */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg, ${toRgba(accent, 0.22)} 0%, transparent 85%)`,
+            }}
+          />
+          {/* top sweep line */}
+          <div
+            className="absolute top-0 left-0 right-0 h-[1.5px]"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+            }}
+          />
+        </motion.div>
+      )}
+
+      {/* ─────────── everything below is UNCHANGED ─────────── */}
+
       {/* Dot-grid texture */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
-          backgroundImage: "radial-gradient(circle, #94a3b8 1px, transparent 1px)",
+          backgroundImage:
+            "radial-gradient(circle, #94a3b8 1px, transparent 1px)",
           backgroundSize: "20px 20px",
         }}
       />
@@ -367,7 +458,11 @@ function TrainingCard({ item, index }) {
         transition={{ duration: 0.5 }}
       >
         <Icon
-          style={{ width: isLarge ? 220 : 120, height: isLarge ? 220 : 120, color: accent }}
+          style={{
+            width: isLarge ? 220 : 120,
+            height: isLarge ? 220 : 120,
+            color: accent,
+          }}
           strokeWidth={0.8}
         />
       </motion.div>
@@ -376,7 +471,10 @@ function TrainingCard({ item, index }) {
       {isLarge && (
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          animate={{ opacity: hovered ? 0.18 : 0.08, scale: hovered ? 1.06 : 1 }}
+          animate={{
+            opacity: hovered ? 0.18 : 0.08,
+            scale: hovered ? 1.06 : 1,
+          }}
           transition={{ duration: 0.6 }}
         >
           {[240, 180, 120].map((size, i) => (
@@ -425,7 +523,9 @@ function TrainingCard({ item, index }) {
             style={{
               fontFamily: "'Syne', sans-serif",
               letterSpacing: "-0.03em",
-              textShadow: hovered ? `0 2px 16px ${toRgba(accent, 0.4)}` : "none",
+              textShadow: hovered
+                ? `0 2px 16px ${toRgba(accent, 0.4)}`
+                : "none",
               transition: "text-shadow 0.4s",
             }}
           >
@@ -475,8 +575,6 @@ function TrainingCard({ item, index }) {
 export default function TrainingBentoGrid() {
   return (
     <section className="py-20 md:py-28  mt-8">
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');`}</style>
-
       {/* Header */}
       <div className="mb-14 md:mb-20 relative pl-5">
         <motion.div
@@ -507,7 +605,10 @@ export default function TrainingBentoGrid() {
               Training Gallery
             </span>
           </div>
-          <div className="h-px w-12" style={{ background: "linear-gradient(90deg,#2563eb,transparent)" }} />
+          <div
+            className="h-px w-12"
+            style={{ background: "linear-gradient(90deg,#2563eb,transparent)" }}
+          />
         </motion.div>
 
         <motion.h2
@@ -518,11 +619,24 @@ export default function TrainingBentoGrid() {
           transition={{ duration: 0.62, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
           style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.04em" }}
         >
-          <span style={{ background: "linear-gradient(135deg,#ffffff 0%,#94a3b8 60%,#475569 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          <span
+            style={{
+              background:
+                "linear-gradient(135deg,#ffffff 0%,#94a3b8 60%,#475569 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
             Where Ideas
           </span>
           <br />
-          <span style={{ background: "linear-gradient(135deg,#2563eb 0%,#7c3aed 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          <span
+            style={{
+              background: "linear-gradient(135deg,#2563eb 0%,#7c3aed 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
             Come to Life
           </span>
         </motion.h2>
@@ -535,8 +649,8 @@ export default function TrainingBentoGrid() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.18 }}
         >
-          Immersive workshops, bootcamps, and collaborative sessions engineered for
-          creative excellence.
+          Immersive workshops, bootcamps, and collaborative sessions engineered
+          for creative excellence.
         </motion.p>
       </div>
 

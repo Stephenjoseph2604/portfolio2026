@@ -592,27 +592,29 @@ import {
   Coffee, Zap, Terminal, Star, Award,
 } from "lucide-react";
 import sj from "../assets/logo/sj2.jpeg";
-
+import prof from '../assets/training/prof.png'
+import t5 from '../assets/training/t51.png'
+import t22 from '../assets/training/t22.png'
+import t16 from '../assets/training/t16.png'
 /* ─── Photos (swap in different shots later) ────────────── */
-const PHOTOS = { main: sj, top1: sj, mid1: sj, mid2: sj };
+const PHOTOS = { main: prof, top1: t5, mid1: t22, mid2: t16 };
 
 /* ─── Data ───────────────────────────────────────────────── */
 const SKILLS = ["React", "Node.js", "Spring Boot", "MySQL", "MongoDB", "JWT", "Kotlin", "Docker"];
 const STATS  = [
-  { label: "Projects Shipped", value: "48", icon: GitBranch, accent: "#2563eb" },
-  { label: "Teams Trained",    value: "120", icon: Coffee,    accent: "#7c3aed" },
-  { label: "Years XP",         value: "7",   icon: Award,     accent: "#10b981" },
+  { label: "Projects Shipped", value: "10", icon: GitBranch, accent: "#2563eb" },
+  { label: "Students Trained",    value: "500", icon: Coffee,    accent: "#7c3aed" },
+  { label: "Years XP",         value: "3",   icon: Award,     accent: "#10b981" },
 ];
 const ROLES = [
   { text: "Full Stack Developer", Icon: Code2,  accent: "#2563eb" },
   { text: "Corporate Trainer",    Icon: Users,  accent: "#10b981" },
 ];
 const CHIPS = [
-  { Icon: Zap,      label: "Performance",  style: { top: "2%",   right: "-3%" }, delay: 1.1 },
-  { Icon: Terminal, label: "CLI Expert",   style: { top: "44%",  right: "-5%" }, delay: 1.3 },
-  { Icon: Star,     label: "5★ Rating",    style: { bottom: "35%", left: "-4%" }, delay: 1.5 },
+  { Icon: Zap, label: "Excellence", style: { top: "2%", right: "-3%" }, delay: 1.1 },
+  { Icon: Terminal, label: "Delivering Solutions", style: { top: "44%", right: "-5%" }, delay: 1.3 },
+  { Icon: Star, label: "Proven Results", style: { bottom: "35%", left: "-4%" }, delay: 1.5 },
 ];
-
 /* ─── Helpers ─────────────────────────────────────────────── */
 const PRIMARY   = "#2563eb";
 const SECONDARY = "#7c3aed";
@@ -1118,9 +1120,9 @@ function BentoGrid() {
       />
 
       {/* Stat cards */}
-      <StatCell icon={GitBranch} value="48" label="Projects Shipped" accent={PRIMARY}
+      <StatCell icon={GitBranch} value='10' label="Projects Shipped" accent={PRIMARY}
         className="col-start-1 col-end-5 row-start-4 row-end-5" delay={0.72} />
-      <StatCell icon={Coffee}    value="120" label="Teams Trained" accent={SECONDARY}
+      <StatCell icon={Coffee}    value="500" label="Students Trained" accent={SECONDARY}
         className="col-start-5 col-end-9 row-start-4 row-end-5" delay={0.80} />
 
       {/* Profile chip */}

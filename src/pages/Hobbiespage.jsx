@@ -531,9 +531,7 @@ export function HobbiesPage() {
       className="min-h-screen pt-24 pb-24 relative overflow-hidden"
       style={{ background: "var(--color-bg-primary)" }}
     >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
-      `}</style>
+  
 
       {/* ── Atmosphere ── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
