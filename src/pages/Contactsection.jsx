@@ -319,7 +319,6 @@ export function ContactSection() {
       className="relative py-16 md:py-24 overflow-hidden"
       style={{ background: "#050508" }}
     >
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');`}</style>
 
       {/* ── Background ── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

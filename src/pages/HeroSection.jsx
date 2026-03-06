@@ -920,6 +920,7 @@ function PhotoCell({ src, label, labelIcon: Icon, badge, objectPos = "center top
         draggable={false}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        loading="lazy"
       />
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/80 via-[#050508]/20 to-transparent pointer-events-none" />

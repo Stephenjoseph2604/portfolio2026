@@ -7,6 +7,8 @@ import {
 
 /* ── dummy images — swap paths ──────────────────────────── */
 import h1  from "../assets/hobbies/chess.png";
+import h2  from "../assets/hobbies/cube.png";
+import h3  from "../assets/hobbies/keys.png";
 // import h2  from "../assets/hobbies/music.jpg";
 // import h3  from "../assets/hobbies/reading.jpg";
 // import h4  from "../assets/hobbies/coding.jpg";
@@ -39,7 +41,7 @@ const ROW_ONE = [
     subtitle: "Playing & Producing",
     desc: "Acoustic guitar on weekends, lo-fi beats during late-night coding sessions.",
     icon: Music,
-    image: h1,
+    image: h2,
     accent: "var(--color-secondary)",
     tag: "Creative",
   },
@@ -49,7 +51,7 @@ const ROW_ONE = [
     subtitle: "Books & Blogs",
     desc: "Tech deep-dives, system design papers, and the occasional sci-fi novel at midnight.",
     icon: BookOpen,
-    image: h1,
+    image: h3,
     accent: "var(--color-teal)",
     tag: "Learning",
   },
@@ -69,7 +71,7 @@ const ROW_ONE = [
     subtitle: "Exploring Places",
     desc: "Hill stations, coastal towns, and hidden cafés — always with a camera in hand.",
     icon: Plane,
-    image: h1,
+    image: h2,
     accent: "#06b6d4",
     tag: "Adventure",
   },
@@ -79,7 +81,7 @@ const ROW_ONE = [
     subtitle: "Brewing & Tasting",
     desc: "Pour-over at 6 am. Single-origin beans, precise ratios, the ritual of the first cup.",
     icon: Coffee,
-    image: h1,
+    image: h3,
     accent: "#a16207",
     tag: "Lifestyle",
   },
@@ -102,7 +104,7 @@ const ROW_TWO = [
     subtitle: "UI & Illustration",
     desc: "Figma explorations, icon sets, and UI concept designs on quiet Sunday afternoons.",
     icon: Brush,
-    image: h1,
+    image: h2,
     accent: "var(--color-secondary)",
     tag: "Design",
   },
@@ -112,7 +114,7 @@ const ROW_TWO = [
     subtitle: "Trails & Summits",
     desc: "Nilgiri trails and Western Ghats treks. Nature resets the developer brain.",
     icon: Mountain,
-    image: h1,
+    image: h3,
     accent: "var(--color-teal)",
     tag: "Outdoors",
   },
@@ -132,7 +134,7 @@ const ROW_TWO = [
     subtitle: "Films & Stories",
     desc: "Christopher Nolan non-linearity, Tamil drama, and anything with great cinematography.",
     icon: Film,
-    image: h1,
+    image: h2,
     accent: "#f59e0b",
     tag: "Visual Art",
   },
@@ -142,7 +144,7 @@ const ROW_TWO = [
     subtitle: "Morning Rides",
     desc: "20 km before sunrise. Clears the mind better than any productivity app.",
     icon: Bike,
-    image: h1,
+    image: h2,
     accent: "#84cc16",
     tag: "Fitness",
   },

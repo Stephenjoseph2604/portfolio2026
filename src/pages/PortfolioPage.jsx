@@ -256,9 +256,17 @@ import job from "../assets/projects/skillbridge.png";
 import profile from "../assets/projects/profile.png";
 import book from "../assets/projects/book3.png";
 import bus from "../assets/projects/bus3.png";
-import student from "../assets/projects/student6.png";
+
 import bus1 from "../assets/projects/bus10.png";
-import password from "../assets/projects/password3.png";
+
+import adminmcq from '../assets/projects/adminmcq.png';
+import codeditor from '../assets/projects/codeeditor.png';
+import notes from '../assets/projects/notes1.png';
+import explain from '../assets/projects/explain.png';
+import quiz from '../assets/projects/quiz.png';
+import algo from '../assets/projects/algo1.png';
+import algo2 from '../assets/projects/algo2.png';
+import vv from '../assets/projects/vv.png';
 
 /* ─── Data ──────────────────────────────────────────────── */
 const categories = ["All", "Web Design", "Mobile App", "Brand Identity", "UI/UX"];
@@ -266,12 +274,14 @@ const categories = ["All", "Web Design", "Mobile App", "Brand Identity", "UI/UX"
 const allProjects = [
   { id: 1, title: "Xamify CRM",          image: Crm,      category: "UI/UX",           year: "2024", tag: "Live Product" },
   { id: 2, title: "SkillBridge App",     image: job,      category: "Mobile App",      year: "2024", tag: "Case Study"   },
-  { id: 3, title: "Book Shelf",          image: book,     category: "Brand Identity",  year: "2023", tag: "Branding"     },
-  { id: 4, title: "BusTrack SaaS",       image: bus,      category: "Web Design",      year: "2024", tag: "Web App"      },
-  { id: 5, title: "Transit Hub",         image: bus1,     category: "Mobile App",      year: "2023", tag: "Mobile"       },
-  { id: 6, title: "Dev Portfolio",       image: profile,  category: "Web Design",      year: "2024", tag: "Portfolio"    },
-  { id: 7, title: "SkillBridge v2",      image: job,      category: "UI/UX",           year: "2024", tag: "Redesign"     },
-  { id: 8, title: "Transit Brand",       image: bus1,     category: "Brand Identity",  year: "2023", tag: "Identity"     },
+  { id: 3, title: "Book Shelf",          image: notes,     category: "Brand Identity",  year: "2023", tag: "Branding"     },
+  { id: 4, title: "BusTrack SaaS",       image: quiz,      category: "Web Design",      year: "2024", tag: "Web App"      },
+  { id: 5, title: "Transit Hub",         image: adminmcq,     category: "Mobile App",      year: "2023", tag: "Mobile"       },
+  { id: 6, title: "Ai learning",       image: explain,  category: "Web Design",      year: "2024", tag: "Portfolio"    },
+  { id: 7, title: "SkillBridge v2",      image: algo,      category: "UI/UX",           year: "2024", tag: "Redesign"     },
+  { id: 9, title: "Transit Brand",       image: codeditor,     category: "Brand Identity",  year: "2023", tag: "Identity"     },
+  { id: 9, title: "Transit Brand",       image: algo2,     category: "Brand Identity",  year: "2023", tag: "Identity"     },
+  { id: 9, title: "Transit Brand",       image: vv,     category: "Brand Identity",  year: "2023", tag: "Identity"     },
 ];
 
 /* ─── Helpers ───────────────────────────────────────────── */
@@ -342,6 +352,7 @@ function ProjectCard({ project, index, isLarge }) {
           animate={{ scale: hovered ? 1.08 : 1, filter: hovered ? "blur(6px) brightness(0.55)" : "blur(0px) brightness(0.75)" }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           onError={(e) => { e.currentTarget.style.display = "none"; }}
+          loading="lazy"
         />
 
         {/* Permanent dark vignette */}

@@ -212,6 +212,14 @@ import {
   Zap,
 } from "lucide-react";
 import t5 from "../assets/training/t51.png";
+import t10 from "../assets/training/t10.png";
+import t11 from "../assets/training/t11.png";
+import t1 from "../assets/training/t1.png";
+import t28 from "../assets/training/t28.png";
+import t29 from "../assets/training/t29.png";
+import t27 from "../assets/training/t27.png";
+import t24 from "../assets/training/t24.png";
+import t16 from "../assets/training/t16.png";
 const trainingItems = [
   {
     id: 1,
@@ -223,7 +231,8 @@ const trainingItems = [
     icon: Users,
     accent: "#2563eb",
     isLarge: true,
-    image: t5,
+    image: t10,
+    subimg: t5,
   },
   {
     id: 2,
@@ -235,7 +244,7 @@ const trainingItems = [
     icon: Zap,
     accent: "#7c3aed",
     isLarge: false,
-    image: t5,
+    image: t28,
   },
   {
     id: 3,
@@ -258,7 +267,7 @@ const trainingItems = [
     icon: Award,
     accent: "#d97706",
     isLarge: false,
-    image: t5,
+    image: t11,
   },
   {
     id: 5,
@@ -270,7 +279,7 @@ const trainingItems = [
     icon: Palette,
     accent: "#e11d48",
     isLarge: false,
-    image: t5,
+    image: t29,
   },
   {
     id: 6,
@@ -282,7 +291,7 @@ const trainingItems = [
     icon: Target,
     accent: "#10b981",
     isLarge: false,
-    image: t5,
+    image: t24,
   },
   {
     id: 7,
@@ -294,11 +303,11 @@ const trainingItems = [
     icon: TrendingUp,
     accent: "#06b6d4",
     isLarge: false,
-    image: t5,
+    image: t16,
   },
   {
     id: 8,
-    title: "Frontend Development",
+    title: " Development",
     category: "Engineering",
     description:
       "Bridging the gap between pixel-perfect design and production code.",
@@ -306,7 +315,7 @@ const trainingItems = [
     icon: Code,
     accent: "#f97316",
     isLarge: false,
-    image: t5,
+    image: t27,
   },
   {
     id: 9,
@@ -318,7 +327,7 @@ const trainingItems = [
     icon: Film,
     accent: "#ec4899",
     isLarge: false,
-    image: t5,
+    image: t1,
   },
 ];
 
@@ -368,11 +377,12 @@ function TrainingCard({ item, index }) {
           onError={() => setImgErr(true)}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
           style={{
-            opacity: hovered ? 0.6 : 0.4,
+            opacity: hovered ? 1 : 0.4,
             transform: hovered ? "scale(1.06)" : "scale(1.0)",
             transition: "opacity 0.75s ease, transform 0.75s ease",
             filter: "saturate(0.6) blur(0px)",
           }}
+          loading="lazy"
         />
       )}
 
