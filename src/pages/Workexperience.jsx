@@ -675,7 +675,7 @@ export function WorkExperience() {
                 Get In Touch <ArrowRight className="w-3.5 h-3.5" />
               </motion.div>
             </a>
-            <a href="/cv.pdf" download>
+            <a href="cv.pdf" target="_blank" download={"Stephenjoseph_CV.pdf"}>
               <motion.div
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm border border-[#1e293b] bg-[#080b12] text-[#64748b] hover:text-[#f1f5f9] hover:border-[rgba(37,99,235,0.35)] transition-all duration-250"
                 style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem" }}

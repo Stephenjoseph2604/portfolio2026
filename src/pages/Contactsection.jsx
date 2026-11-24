@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowUpRight, Check, X } from "lucide-react";
+import { ArrowUpRight, Check, LoaderCircle, X } from "lucide-react";
 import { CONTACT, PROGRAMS, SITE, SOCIALS } from "../content";
+import { SEND_ERROR, sendContactEmail } from "../lib/email";
 import { scrollToElement } from "../lib/smooth";
 import { Reveal, SectionHead } from "../components/ui";
 
@@ -19,12 +20,26 @@ const fill = (template, program) =>
 const initialForm = (program) =>
   program && B ? { ...EMPTY, subject: B.subject, message: fill(B.message, program) } : EMPTY;
 
+/* Spam protection: anything submitted faster than a human could fill the form,
+   or with the hidden honeypot field filled in, is quietly dropped. */
+const MIN_FILL_MS = 2500;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/* Trim every field (and collapse runs of spaces in the name) before validating/sending */
+const cleanForm = (form) => ({
+  name: form.name.trim().replace(/\s+/g, " "),
+  email: form.email.trim(),
+  subject: form.subject,
+  message: form.message.trim(),
+});
+
 function validate(form) {
   const e = {};
-  if (!form.name.trim()) e.name = F.errors.name;
-  if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) e.email = F.errors.email;
+  if (!form.name) e.name = F.errors.name;
+  if (!EMAIL_RE.test(form.email)) e.email = F.errors.email;
   if (!form.subject) e.subject = F.errors.subject;
-  if (!form.message.trim()) e.message = F.errors.message;
+  if (!form.message) e.message = F.errors.message;
   return e;
 }
 
@@ -51,29 +66,70 @@ function ContactForm({ program }) {
   const [form, setForm] = useState(() => initialForm(program));
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState(null); // null | SEND_ERROR value
+  const sendingRef = useRef(false); // blocks double-clicks before React re-renders
+  const honeypotRef = useRef(null);
+  const openedAt = useRef(0);
+
+  useEffect(() => {
+    openedAt.current = Date.now();
+  }, []);
 
   const update = (name, value) => {
     setForm((f) => ({ ...f, [name]: value }));
     if (errors[name]) setErrors((e) => ({ ...e, [name]: "" }));
+    if (sendError) setSendError(null);
   };
 
-  const submit = (ev) => {
+  const succeed = () => {
+    setForm(initialForm(program)); // clear the form only after a confirmed send
+    setErrors({});
+    setSent(true);
+  };
+
+  const submit = async (ev) => {
     ev.preventDefault();
-    const errs = validate(form);
+    if (sendingRef.current) return;
+
+    const clean = cleanForm(form);
+    const errs = validate(clean);
     if (Object.keys(errs).length) {
       setErrors(errs);
       return;
     }
-    const subject = program && B ? `${fill(B.emailSubject, program)} — ${form.name}` : `${form.subject} — ${form.name}`;
-    const body = `${form.message}\n\n— ${form.name}\n${form.email}`;
-    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setSendError(null);
+
+    const looksLikeBot = Boolean(honeypotRef.current?.value) || Date.now() - openedAt.current < MIN_FILL_MS;
+    if (looksLikeBot) {
+      succeed(); // pretend it worked; nothing is sent
+      return;
+    }
+
+    sendingRef.current = true;
+    setSending(true);
+    try {
+      await sendContactEmail({
+        name: clean.name,
+        email: clean.email,
+        title: program && B ? fill(B.emailSubject, program) : clean.subject,
+        message: clean.message,
+      });
+      succeed();
+    } catch (err) {
+      setSendError(err?.reason === SEND_ERROR.RATE_LIMITED ? SEND_ERROR.RATE_LIMITED : SEND_ERROR.FAILED);
+    } finally {
+      sendingRef.current = false;
+      setSending(false);
+    }
   };
 
   const reset = () => {
     setForm(initialForm(program));
     setErrors({});
+    setSendError(null);
     setSent(false);
+    openedAt.current = Date.now();
   };
 
   return (
@@ -96,7 +152,13 @@ function ContactForm({ program }) {
                   </button>
                 </div>
               ) : (
-                <form noValidate onSubmit={submit}>
+                <form noValidate onSubmit={submit} aria-busy={sending}>
+                  {/* Honeypot: invisible to people, tempting to bots. Leave it empty. */}
+                  <div aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
+                    <label htmlFor="cf-website">Website (leave blank)</label>
+                    <input ref={honeypotRef} id="cf-website" name="website_url" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+                  </div>
+
                   <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                     <h2 className="display text-3xl">{F.title}</h2>
                     <p className="font-mono text-xs text-muted">{F.note}</p>
@@ -197,16 +259,42 @@ function ContactForm({ program }) {
                     />
                   </Field>
 
+                  {sendError && (
+                    <p role="alert" className="fade-up mt-2 rounded-xl border border-accent/40 bg-accent-soft px-4 py-3 text-sm leading-relaxed text-ink">
+                      {sendError === SEND_ERROR.RATE_LIMITED ? (
+                        F.rateLimited
+                      ) : (
+                        <>
+                          {F.sendError}{" "}
+                          <a href={`mailto:${SITE.email}`} className="link-u font-medium">
+                            {SITE.email}
+                          </a>
+                          .
+                        </>
+                      )}
+                    </p>
+                  )}
+
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
                     <span className="font-mono text-xs tabular-nums text-muted">
                       {form.message.length} / {F.maxLength}
                     </span>
                     <button
                       type="submit"
-                      className="group/btn inline-flex h-14 items-center gap-2.5 rounded-full bg-ink px-8 font-medium text-bg transition-colors duration-300 hover:bg-accent hover:text-accent-contrast active:scale-[0.98]"
+                      disabled={sending}
+                      className="group/btn inline-flex h-14 items-center gap-2.5 rounded-full bg-ink px-8 font-medium text-bg transition-colors duration-300 hover:bg-accent hover:text-accent-contrast active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 disabled:hover:bg-ink disabled:hover:text-bg"
                     >
-                      {F.submitLabel}
-                      <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" aria-hidden="true" />
+                      {sending ? (
+                        <>
+                          <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                          {F.sendingLabel}
+                        </>
+                      ) : (
+                        <>
+                          {F.submitLabel}
+                          <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" aria-hidden="true" />
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>

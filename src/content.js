@@ -795,8 +795,9 @@ export const EXPERIENCE = {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    14. CONTACT PAGE
-   The form opens the visitor's email app with the message pre-filled and
-   addressed to SITE.email — no backend needed.
+   The form sends straight to your inbox through EmailJS (see .env.example).
+   The email subject becomes "Portfolio Contact Form: <title>", where title is
+   the chosen topic — or "Workshop booking: <program>" for bookings.
 ═══════════════════════════════════════════════════════════════════════════ */
 export const CONTACT = {
   eyebrow: "Contact",
@@ -832,9 +833,12 @@ export const CONTACT = {
     },
     maxLength: 1000,
     submitLabel: "Send message",
-    successTitle: "Your email app is ready.",
-    successText: "I've pre-filled a message with your details — just hit send. If nothing opened, write to me directly at",
+    sendingLabel: "Sending…",
+    successTitle: "Message sent.",
+    successText: "Thanks for reaching out — your message is in my inbox and I'll reply within 24 hours. Anything urgent? Write to me directly at",
     successReset: "Write another message",
+    sendError: "Sorry — your message couldn't be sent. Please try again in a moment, or email me directly at",
+    rateLimited: "Your message was just sent — please wait half a minute before sending another.",
     // Used when someone clicks "Book a workshop" on a training program.
     // {program}, {duration} and {format} are replaced automatically.
     booking: {
@@ -966,6 +970,37 @@ export const NOT_FOUND = {
   title: "This page took a *wrong turn*.",
   text: "The link may be broken or the page may have moved.",
   cta: { label: "Back to home", to: "/" },
+};
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   20b. COMING SOON PAGE
+   Shown instead of the whole site when SITE_LIVE is false in src/App.jsx.
+   • launchDate: ISO date with your time zone. Leave "" to hide the countdown.
+   • progress:   0–100, drives the launch progress bar (set null to hide).
+   • The notify form opens the visitor's email app addressed to SITE.email.
+═══════════════════════════════════════════════════════════════════════════ */
+export const COMING_SOON = {
+  pageTitle: "Stephen Joseph — Coming soon",
+  eyebrow: "New portfolio · Coming soon",
+  title: "Something *worth the wait* is on its way.",
+  text: "I'm putting the finishing touches on a new home for my work as a full-stack developer and corporate trainer. Projects, programs and case studies — launching shortly.",
+  launchDate: "2026-12-15T10:00:00+05:30",
+  countdownLabels: { days: "Days", hours: "Hours", minutes: "Minutes", seconds: "Seconds" },
+  launchedText: "Launching any moment now.",
+  progress: 85,
+  progressLabel: "Build progress",
+  ring: "Portfolio launching soon • Developer • Trainer • ",
+  notify: {
+    label: "Get notified at launch",
+    placeholder: "you@company.com",
+    button: "Notify me",
+    error: "Please enter a valid email address.",
+    emailSubject: "Notify me when your portfolio launches",
+    emailBody: "Hi Stephen,\n\nPlease let me know when your new portfolio is live.\n\nMy email: {email}",
+    success: "Thanks! Your email app has opened — just hit send and I'll let you know at launch.",
+  },
+  directLabel: "Need something now? Write to me at",
 };
 
 

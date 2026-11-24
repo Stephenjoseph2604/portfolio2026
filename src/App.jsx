@@ -25,8 +25,18 @@ import Gallery from "./pages/Gallery";
 import FAQSection from "./pages/FAQSection";
 import ReadyToStart from "./pages/ReadyToStart";
 
+import ComingSoon from "./pages/ComingSoon";
+
 import { NOT_FOUND, PROJECT_IMPACT, TRAINED_AT } from "./content";
 import { startSmoothScroll } from "./lib/smooth";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SITE SWITCH
+   true  → the full portfolio
+   false → the "Coming soon" page (every URL shows it)
+   Its text, launch date and countdown live in content.js → COMING_SOON.
+═══════════════════════════════════════════════════════════════════════════ */
+const SITE_LIVE = false;
 
 /* Each page lists its sections; the FAQ is appended with the next number. */
 function Page({ children, faqIndex }) {
@@ -56,6 +66,17 @@ function NotFound() {
 }
 
 export default function App() {
+  return SITE_LIVE ? (
+    <Site />
+  ) : (
+    <>
+      <ComingSoon />
+      <div className="grain" aria-hidden="true" />
+    </>
+  );
+}
+
+function Site() {
   useEffect(() => {
     startSmoothScroll();
   }, []);
