@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { GitBranch, Database, Zap, Terminal, Code, Brain } from "lucide-react";
 import { useMotionValueEvent } from "framer-motion";
+import { ABOUT, SITE } from "../content";
 
 function ParticleTrail({ containerRef }) {
   const canvasRef = useRef(null);
@@ -241,7 +242,7 @@ function StatusBar() {
       <div className="bg-bg-secondary/90 backdrop-blur-md rounded-xl p-3 border-border/80">
         <div className="flex justify-between mb-1.5">
           <span className="text-xs font-bold tracking-widest uppercase text-primary">
-            Profile Loaded
+            {ABOUT.imageCard.statusLabel}
           </span>
           <span className="text-xs font-mono text-success">{pct}%</span>
         </div>
@@ -254,9 +255,9 @@ function StatusBar() {
         </div>
         <div className="flex justify-between mt-2">
           <span className="text-xs text-fg-muted/70 font-mono">
-            fullstack.dev
+            {ABOUT.imageCard.footLeft}
           </span>
-          <span className="text-xs text-fg-muted/70 font-mono">SJ_v2.0</span>
+          <span className="text-xs text-fg-muted/70 font-mono">{ABOUT.imageCard.footRight}</span>
         </div>
       </div>
     </div>
@@ -349,7 +350,7 @@ export function HeroImage({ imageSrc, fallbackImage }) {
 
               <img
                 src={imageSrc}
-                alt="Stephenjoseph M"
+                alt={ABOUT.imageCard.name}
                 className="w-full h-full object-cover object-center relative z-20 rounded-b-2xl"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
@@ -358,7 +359,7 @@ export function HeroImage({ imageSrc, fallbackImage }) {
               />
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-gradient-to-br from-bg-secondary to-bg-primary rounded-b-2xl hidden">
                 <div className="text-5xl font-bold  text-primary">
-                  SJ
+                  {SITE.initials}
                 </div>
               </div>
 
@@ -366,7 +367,7 @@ export function HeroImage({ imageSrc, fallbackImage }) {
 
               {/* Left labels */}
               <div className="absolute left-3 top-1/3 z-30 flex flex-col gap-1">
-                {["DEV", "UX", "ML"].map((t, i) => (
+                {ABOUT.imageCard.tags.map((t, i) => (
                   <motion.div
                     key={t}
                     className="px-2 py-1 text-xs font-bold tracking-widest text-primary border border-primary/40 bg-bg-secondary/10 rounded backdrop-blur-sm shadow-md"
@@ -402,14 +403,14 @@ export function HeroImage({ imageSrc, fallbackImage }) {
             <div className="flex items-center justify-between px-4 py-3 bg-bg-secondary/80 border-t-border">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/30">
-                  <span className="text-xs font-bold text-fg-primary">SJ</span>
+                  <span className="text-xs font-bold text-fg-primary">{SITE.initials}</span>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-fg-primary leading-none">
-                    Stephenjoseph M
+                    {ABOUT.imageCard.name}
                   </p>
                   <p className="text-xs text-fg-muted mt-1">
-                    Fullstack · Trainer
+                    {ABOUT.imageCard.role}
                   </p>
                 </div>
               </div>

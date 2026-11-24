@@ -1,88 +1,401 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
+/* Dark-mode variant driven by <html data-theme="dark"> */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
-
-@theme {
-  /* Backgrounds */
-  --color-bg-primary: #050508;
-  --color-bg-secondary: #080b12;
-  --color-bg-card: #0d1117;
-  --color-bg-glass: #0d1117;
-  
-  /* Primary Colors */
-  --color-primary: #2563eb;
-  --color-primary-light: #1d4ed8;
-  --color-secondary: #7c3aed;
-  --color-teal: #0f766e;
-  
-  /* Neutrals */
-  --color-fg-primary: #ffffff;
-  --color-fg-secondary: #94a3b8;
-  --color-fg-muted: #64748b;
-  --color-fg-muted-2: #475569;
-  --color-fg-muted-3: #334155;
-  
-  /* Borders & Status */
-  --color-border: #1e293b;
-  --color-success: #10b981;
-  --color-dot: #10b981;
-  
-  /* Opacity variants */
-  --color-primary/20: rgba(37, 99, 235, 0.2);
-  --color-primary/40: rgba(37, 99, 235, 0.4);
-  --color-primary/50: rgba(37, 99, 235, 0.5);
-  --color-primary/55: rgba(37, 99, 235, 0.55);
+/* ══════════════════════════════════════════════════════════════════════
+   THEME TOKENS
+   "Ink & Brass": warm paper neutrals with a brass accent taken from the
+   SJ monogram. Change the look of the whole site from these two blocks.
+══════════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #f1eee6;
+  --surface: #f8f6f0;
+  --surface-2: #e8e4d9;
+  --ink: #171614;
+  --ink-soft: #45423c;
+  --muted: #6f6b62;
+  --line: #d9d4c7;
+  --line-strong: #b8b2a2;
+  --accent: #a0701b;
+  --accent-soft: rgba(160, 112, 27, 0.16);
+  --accent-contrast: #fffaf0;
+  --plate: #ffffff;
+  --invert-bg: #171614;
+  --invert-ink: #f1eee6;
+  --invert-muted: #a39e92;
+  --invert-line: #34322d;
+  --invert-accent: #e2b04a;
+  --invert-accent-contrast: #15110a;
+  --shadow: 0 1px 2px rgba(23, 22, 20, 0.05), 0 12px 32px -12px rgba(23, 22, 20, 0.18);
+  --grain-opacity: 0.05;
+  color-scheme: light;
 }
 
-*{
-    /* font-family: "New Rocker", system-ui; */
-    /* font-family: "Manrope", sans-serif; */
-    /* font-family: "Montserrat", sans-serif; */
-     font-family: "Syne", sans-serif;
-     box-sizing: border-box;
+[data-theme="dark"] {
+  --bg: #0e0e0d;
+  --surface: #161614;
+  --surface-2: #1e1e1b;
+  --ink: #eeeae1;
+  --ink-soft: #c6c1b5;
+  --muted: #918c80;
+  --line: #2a2926;
+  --line-strong: #3f3d37;
+  --accent: #e2b04a;
+  --accent-soft: rgba(226, 176, 74, 0.18);
+  --accent-contrast: #15110a;
+  --plate: #ebe7de;
+  --invert-bg: #eeeae1;
+  --invert-ink: #0e0e0d;
+  --invert-muted: #5f5b52;
+  --invert-line: #cfcabd;
+  --invert-accent: #8f6312;
+  --invert-accent-contrast: #fffaf0;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+  --grain-opacity: 0.035;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-plate: var(--plate);
+  --color-invert-bg: var(--invert-bg);
+  --color-invert-ink: var(--invert-ink);
+  --color-invert-muted: var(--invert-muted);
+  --color-invert-line: var(--invert-line);
+  --color-invert-accent: var(--invert-accent);
+  --color-invert-accent-contrast: var(--invert-accent-contrast);
+
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Legacy names kept so older, unused components still compile sensibly */
+  --color-bg-primary: var(--bg);
+  --color-bg-secondary: var(--surface);
+  --color-bg-card: var(--surface);
+  --color-fg-primary: var(--ink);
+  --color-fg-secondary: var(--ink-soft);
+  --color-fg-muted: var(--muted);
+  --color-fg-muted-2: var(--muted);
+  --color-fg-muted-3: var(--muted);
+  --color-border: var(--line);
+  --color-primary: var(--accent);
+  --color-secondary: var(--ink-soft);
+  --color-success: var(--accent);
+  --color-teal: var(--ink-soft);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BASE
+══════════════════════════════════════════════════════════════════════ */
+@layer base {
+  html {
+    background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+/* Smooth colour change only while the theme is being switched */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease,
+    fill 0.45s ease !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LAYOUT & TYPE
+══════════════════════════════════════════════════════════════════════ */
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 1420px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+  .section-y {
+    padding-block: clamp(4.5rem, 10vw, 8.5rem);
+  }
+  .page-top {
+    padding-top: clamp(6.75rem, 11vw, 8.5rem);
   }
 
-  @layer utilities {
-  .text-glow {
-    text-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 0.95;
   }
-  .box-glow {
-    box-shadow: 0 0 40px rgba(37, 99, 235, 0.15);
+  .display em,
+  .accent-em em {
+    font-style: italic;
+    color: var(--accent);
   }
-}
-/* Custom marquee animation - SLOWER */
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 50s linear infinite; /* NOW IT WORKS! */
-}
-.bg-gradient-fade-l {
-  background: linear-gradient(to right, var(--color-bg-secondary), transparent);
+
+  .t-hero {
+    font-size: clamp(4.5rem, 19vw, 11.5rem);
+    line-height: 0.86;
+    letter-spacing: -0.03em;
+  }
+  @media (min-width: 1024px) {
+    /* the name shares the row with the portrait from here up */
+    .t-hero {
+      font-size: min(11.5rem, 12.5vw);
+    }
+  }
+  .t-h1 {
+    font-size: clamp(2.9rem, 8vw, 7rem);
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+  }
+  .t-h2 {
+    font-size: clamp(2.4rem, 5.6vw, 4.75rem);
+    line-height: 0.98;
+  }
+  .t-h3 {
+    font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  .t-lead {
+    font-size: clamp(1.35rem, 2.3vw, 1.95rem);
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Body copy emphasis: *word* in content.js becomes a highlighter mark */
+  .prose-em em {
+    font-style: normal;
+    color: var(--ink);
+    font-weight: 500;
+    background-image: linear-gradient(transparent 60%, var(--accent-soft) 60%);
+  }
+
+  /* Animated underline for text links */
+  .link-u {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-out-soft), color 0.25s ease;
+  }
+  .link-u:hover,
+  .link-u:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .hairline {
+    border-color: var(--line);
+  }
+
+  /* Logo plates keep brand logos legible on both themes */
+  .plate {
+    background: var(--plate);
+    border-radius: 0.5rem;
+  }
+
+  /* Image frames */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-2);
+    border-radius: 0.75rem;
+    isolation: isolate;
+  }
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out-soft);
+  }
+  .group:hover .frame img,
+  .frame:hover img {
+    transform: scale(1.035);
+  }
+  [data-theme="dark"] .frame img {
+    filter: brightness(0.9);
+  }
 }
 
-.bg-gradient-fade-r {
-  background: linear-gradient(to left, var(--color-bg-secondary), transparent);
+/* ══════════════════════════════════════════════════════════════════════
+   MOTION — CSS only, transform/opacity, GPU friendly
+══════════════════════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 0.9s var(--ease-out-soft), transform 0.9s var(--ease-out-soft);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
 }
 
-@layer utilities {
-  .bg-gradient-fintech { 
-    background: linear-gradient(to bottom right, #1e3a8a, var(--color-bg-primary)); 
-  }
-  .bg-gradient-ecommerce { 
-    background: linear-gradient(to bottom right, #7c3aed, var(--color-bg-primary)); 
-  }
-  .bg-gradient-brand { 
-    background: linear-gradient(to bottom right, #10b981, var(--color-bg-primary)); 
-  }
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--marquee-duration, 45s) linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 
-.shadow-glow {
-  filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.6));
+@keyframes fade-up {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: none; }
 }
-.bg-gradient-radial {
-  background: radial-gradient(circle at 30% 30%, var(--color-primary) 0%, transparent 50%);
+.fade-up {
+  animation: fade-up 0.7s var(--ease-out-soft) both;
+}
+
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes seal-spin {
+  to { transform: rotate(360deg); }
+}
+.seal-rotate {
+  animation: seal-spin 28s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-soft); }
+  50%      { box-shadow: 0 0 0 6px transparent; }
+}
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* Accordion height animation without measuring the DOM */
+.collapse-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease-out-soft);
+}
+.collapse-grid.is-open {
+  grid-template-rows: 1fr;
+}
+.collapse-grid > * {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Expand on hover/focus for pointer devices, always open on touch screens */
+.hover-expand > * {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.group:hover .hover-expand,
+.group:focus-within .hover-expand {
+  grid-template-rows: 1fr;
+}
+.group:hover .hover-expand > *,
+.group:focus-within .hover-expand > * {
+  opacity: 1;
+}
+@media (hover: none) {
+  .hover-expand { grid-template-rows: 1fr; }
+  .hover-expand > * { opacity: 1; }
+}
+
+/* Subtle paper grain (static image, no blend modes) */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.85rem;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .marquee-track { animation: none; }
+  .status-dot { animation: none; }
+  .seal-rotate { animation: none; }
+  .fade-up { animation: none; }
+  .frame img { transition: none; }
 }

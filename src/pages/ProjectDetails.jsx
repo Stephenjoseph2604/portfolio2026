@@ -10,11 +10,9 @@ import {
   Shield, Zap, Users, Code2, Database, Globe,
   Tag, ArrowRight, Star,
 } from "lucide-react";
+import { PROJECT_DETAILS } from "../content";
 
 /* ── swap these for real assets ─────────────────────────── */
-import crmImg     from "../assets/projects/xamify.png";
-import jobImg     from "../assets/projects/skillbridge.png";
-import profileImg from "../assets/projects/profile.png";
 
 /* ═══════════════════════════════════════════════════════════
    HELPERS
@@ -33,126 +31,7 @@ function toRgba(hex, a) {
 /* ═══════════════════════════════════════════════════════════
    PROJECT DATA
 ══════════════════════════════════════════════════════════ */
-const PROJECTS = [
-  {
-    id: "xamify-crm",
-    title: "Xamify CRM",
-    subtitle: "Dashboard System",
-    tagline: "Enterprise CRM for managing clients, leads, operations and real-time analytics — built for scale.",
-    category: "Full Stack Java Application",
-    tag: "Enterprise",
-    year: "2024",
-    status: "Live",
-    accent: PRIMARY,
-    images: [crmImg, crmImg, crmImg],
-    overview: "Xamify is a comprehensive CRM Dashboard built to manage clients, track leads, automate workflows, and provide real-time business intelligence. Designed for mid-to-large enterprise teams with multi-role access and audit-grade security.",
-    challenge: "The client needed a single unified platform to replace five disconnected tools — Excel sheets, email chains, a legacy CRM, a manual invoicing system, and a reporting dashboard — all operating in silos with zero shared data.",
-    solution: "Designed a modular Spring Boot backend with domain-driven architecture, a React frontend with role-based UI rendering, and a MySQL database with optimised indexing for sub-100ms query performance across 500k+ records.",
-    features: [
-      "Role-based access control (Admin / Manager / Sales / Viewer)",
-      "Real-time analytics dashboard with drill-down charts",
-      "Lead lifecycle tracking with automated status updates",
-      "JWT + Redis session management with token rotation",
-      "Full audit log for every critical action",
-      "RESTful API with OpenAPI 3.0 documentation",
-      "Email notification system with templating engine",
-      "One-click export to PDF / Excel",
-    ],
-    techStack: [
-      { name: "React.js",     Icon: Code2,    accent: "#61dafb", cat: "Frontend"  },
-      { name: "Spring Boot",  Icon: Layers,   accent: "#6db33f", cat: "Backend"   },
-      { name: "MySQL",        Icon: Database, accent: "#00758f", cat: "Database"  },
-      { name: "JWT + Redis",  Icon: Shield,   accent: "#e11d48", cat: "Security"  },
-      { name: "REST API",     Icon: Globe,    accent: PRIMARY,   cat: "API"       },
-      { name: "Tailwind CSS", Icon: Zap,      accent: "#38bdf8", cat: "Styling"   },
-    ],
-    metrics: [
-      { val: "500k+",  lbl: "Records handled" },
-      { val: "<100ms", lbl: "Query latency"   },
-      { val: "4",      lbl: "User roles"      },
-      { val: "99.9%",  lbl: "Uptime SLA"      },
-    ],
-    github: "https://github.com/stephenjosephm",
-    live: "#",
-  },
-  {
-    id: "skillbridge",
-    title: "SkillBridge",
-    subtitle: "Job Portal Platform",
-    tagline: "Full-stack job portal connecting developers with opportunities via smart skill-based matching.",
-    category: "React + Spring Boot",
-    tag: "Web App",
-    year: "2024",
-    status: "Live",
-    accent: SECONDARY,
-    images: [jobImg, jobImg, jobImg],
-    overview: "SkillBridge is a job-matching platform built for developers. Candidates upload profiles, take skill assessments, and get matched with roles posted by verified companies — no more spray-and-pray applications.",
-    challenge: "Traditional portals required candidates to manually apply to hundreds of roles while companies drowned in unfiltered applications. Both sides wasted enormous time with zero quality filtering.",
-    solution: "Built a smart matching engine using skill-tag intersection scoring, a Spring Boot REST backend, lazy-loading React SPA, and a JWT-secured multi-tenant auth system with separate Candidate and Recruiter dashboards.",
-    features: [
-      "Smart skill-based job-matching algorithm",
-      "Separate dashboards for candidates and recruiters",
-      "Resume upload and auto-parsing",
-      "Kanban-style application pipeline tracker",
-      "Company profile and job-posting management",
-      "Real-time notification system",
-      "Admin panel for platform moderation",
-    ],
-    techStack: [
-      { name: "React.js",    Icon: Code2,    accent: "#61dafb", cat: "Frontend" },
-      { name: "Spring Boot", Icon: Layers,   accent: "#6db33f", cat: "Backend"  },
-      { name: "MySQL",       Icon: Database, accent: "#00758f", cat: "Database" },
-      { name: "JWT Auth",    Icon: Shield,   accent: "#e11d48", cat: "Security" },
-      { name: "REST API",    Icon: Globe,    accent: PRIMARY,   cat: "API"      },
-    ],
-    metrics: [
-      { val: "3",   lbl: "User roles"       },
-      { val: "95%", lbl: "Match accuracy"   },
-      { val: "2×",  lbl: "Hire rate lift"   },
-      { val: "40%", lbl: "Time-to-hire cut" },
-    ],
-    github: "https://github.com/stephenjosephm",
-    live: "#",
-  },
-  {
-    id: "dev-portfolio",
-    title: "Developer",
-    subtitle: "Portfolio Site",
-    tagline: "Personal developer portfolio built with React, Tailwind CSS, and Framer Motion.",
-    category: "MERN / React Application",
-    tag: "Portfolio",
-    year: "2023",
-    status: "Live",
-    accent: SUCCESS,
-    images: [profileImg, profileImg, profileImg],
-    overview: "A performant, animated personal portfolio showcasing projects, skills, and corporate training work. Designed with a dark-luxury aesthetic and fully responsive across all breakpoints.",
-    challenge: "Most developer portfolios feel generic — cookie-cutter templates with identical layouts. The goal was a distinctive, memorable experience that communicates both technical depth and design sensibility.",
-    solution: "Committed to a dark-luxury editorial aesthetic with Syne + JetBrains Mono typography, magnetic 3D tilt interactions, per-section accent colours, and cohesive atmospheric backgrounds across every section.",
-    features: [
-      "Magnetic 3D tilt interactions on all cards",
-      "Animated bento grid hero section",
-      "Skills bento with per-skill accent colours",
-      "Portfolio section with filter and reveal system",
-      "FAQ, Testimonials, and Services sections",
-      "Fully responsive across mobile, tablet, desktop",
-      "Optimised performance — Lighthouse 95+",
-    ],
-    techStack: [
-      { name: "React.js",      Icon: Code2,  accent: "#61dafb", cat: "Frontend"  },
-      { name: "Tailwind CSS",  Icon: Zap,    accent: "#38bdf8", cat: "Styling"   },
-      { name: "Framer Motion", Icon: Star,   accent: SUCCESS,   cat: "Animation" },
-      { name: "Vite",          Icon: Layers, accent: "#f59e0b", cat: "Build"     },
-    ],
-    metrics: [
-      { val: "95+",  lbl: "Lighthouse score" },
-      { val: "100%", lbl: "Responsive"        },
-      { val: "8+",   lbl: "Sections"          },
-      { val: "0ms",  lbl: "CLS score"         },
-    ],
-    github: "https://github.com/stephenjosephm",
-    live: "#",
-  },
-];
+const PROJECTS = PROJECT_DETAILS;
 
 /* ═══════════════════════════════════════════════════════════
    HOOKS
