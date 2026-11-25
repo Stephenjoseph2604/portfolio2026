@@ -39,7 +39,7 @@ import { startSmoothScroll } from "./lib/smooth";
    false → the "Coming soon" page (every URL shows it)
    Its text, launch date and countdown live in content.js → COMING_SOON.
 ═══════════════════════════════════════════════════════════════════════════ */
-const SITE_LIVE = true;
+const SITE_LIVE = false;
 
 /* Each page lists its sections; the FAQ is appended with the next number. */
 function Page({ children, faqIndex }) {

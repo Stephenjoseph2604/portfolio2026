@@ -1527,7 +1527,7 @@ export const COMING_SOON = {
   eyebrow: "New portfolio · Coming soon",
   title: "Something *worth the wait* is on its way.",
   text: "I'm putting the finishing touches on a new home for my work as a full-stack developer and corporate trainer. Projects, programs and case studies — launching shortly.",
-  launchDate: "2026-12-15T10:00:00+05:30",
+  launchDate: "2027-01-01T10:00:00+05:30",
   countdownLabels: { days: "Days", hours: "Hours", minutes: "Minutes", seconds: "Seconds" },
   launchedText: "Launching any moment now.",
   progress: 85,

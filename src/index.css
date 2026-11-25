@@ -137,6 +137,36 @@
   }
 }
 
+/* ── Scrollbar — follows the light/dark theme ───────────────────────────── */
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) var(--bg);
+}
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--line-strong);
+  border: 3px solid var(--bg); /* inset look: a slim pill floating in the track */
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent);
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--accent);
+  border-width: 2px;
+}
+::-webkit-scrollbar-corner {
+  background: var(--bg);
+}
+
 /* Smooth colour change only while the theme is being switched */
 .theme-transition,
 .theme-transition *,
