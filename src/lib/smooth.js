@@ -4,6 +4,7 @@ import Lenis from "lenis";
    Touch devices keep native scrolling; reduced-motion users are left alone. */
 
 let lenis = null;
+const locks = new Set(); // who is currently holding the page still (menu, viewer, loader…)
 
 export function startSmoothScroll() {
   if (lenis || typeof window === "undefined") return lenis;
@@ -14,6 +15,7 @@ export function startSmoothScroll() {
     smoothWheel: true,
     wheelMultiplier: 0.95,
   });
+  if (locks.size) lenis.stop(); // something locked scrolling before we started
 
   const raf = (time) => {
     lenis.raf(time);
@@ -38,9 +40,14 @@ export function scrollToElement(el, { offset = -96, immediate = false } = {}) {
     });
 }
 
-export function lockScroll(locked) {
-  document.documentElement.style.overflow = locked ? "hidden" : "";
+/* Each caller passes its own key, so one releasing its lock
+   (e.g. the menu closing) never unlocks another (e.g. the loader). */
+export function lockScroll(locked, key = "default") {
+  if (locked) locks.add(key);
+  else locks.delete(key);
+  const anyLocked = locks.size > 0;
+  document.documentElement.style.overflow = anyLocked ? "hidden" : "";
   if (!lenis) return;
-  if (locked) lenis.stop();
+  if (anyLocked) lenis.stop();
   else lenis.start();
 }

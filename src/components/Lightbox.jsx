@@ -10,12 +10,12 @@ export default function Lightbox({ item, onClose }) {
   useEffect(() => {
     if (!item) return undefined;
     const previous = document.activeElement;
-    lockScroll(true);
+    lockScroll(true, "lightbox");
     closeRef.current?.focus();
     const onKey = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => {
-      lockScroll(false);
+      lockScroll(false, "lightbox");
       window.removeEventListener("keydown", onKey);
       previous?.focus?.();
     };

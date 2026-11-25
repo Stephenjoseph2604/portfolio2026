@@ -49,7 +49,7 @@ function NeighbourCard({ project, direction }) {
   return (
     <Link
       to={projectPath(project)}
-      className={`group flex items-center gap-5 rounded-2xl border border-line bg-surface p-4 transition-colors duration-300 hover:border-line-strong md:p-5 ${
+      className={`group flex min-w-0 items-center gap-5 rounded-2xl border border-line bg-surface p-4 transition-colors duration-300 hover:border-line-strong md:p-5 ${
         next ? "flex-row-reverse text-right" : ""
       }`}
     >
@@ -320,7 +320,7 @@ export default function ProjectDetails() {
 
         {/* ── Previous / next ── */}
         {prev && next && (
-          <nav aria-label="More projects" className="mt-6 grid gap-4 md:grid-cols-2">
+          <nav aria-label="More projects" className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NeighbourCard project={prev} direction="prev" />
             <NeighbourCard project={next} direction="next" />
           </nav>

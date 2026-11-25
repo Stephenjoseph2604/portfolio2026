@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -27,6 +27,8 @@ import FAQSection from "./pages/FAQSection";
 import ReadyToStart from "./pages/ReadyToStart";
 
 import ComingSoon from "./pages/ComingSoon";
+import Loader from "./components/Loader";
+import { shouldShowLoader } from "./lib/loader";
 
 import { NOT_FOUND, PROJECT_IMPACT, TRAINED_AT } from "./content";
 import { startSmoothScroll } from "./lib/smooth";
@@ -37,7 +39,7 @@ import { startSmoothScroll } from "./lib/smooth";
    false → the "Coming soon" page (every URL shows it)
    Its text, launch date and countdown live in content.js → COMING_SOON.
 ═══════════════════════════════════════════════════════════════════════════ */
-const SITE_LIVE = false;
+const SITE_LIVE = true;
 
 /* Each page lists its sections; the FAQ is appended with the next number. */
 function Page({ children, faqIndex }) {
@@ -78,12 +80,17 @@ export default function App() {
 }
 
 function Site() {
+  /* Launch loader — settings in content.js → LOADER */
+  const [showLoader, setShowLoader] = useState(shouldShowLoader);
+  const hideLoader = useCallback(() => setShowLoader(false), []);
+
   useEffect(() => {
     startSmoothScroll();
   }, []);
 
   return (
     <>
+      {showLoader && <Loader onDone={hideLoader} />}
       <a href="#main" className="skip-link">
         Skip to content
       </a>

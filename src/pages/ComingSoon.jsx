@@ -215,7 +215,7 @@ export default function ComingSoon() {
             </div>
           </div>
 
-          <div className="fade-up lg:col-span-5 lg:self-start mt-4" style={{ animationDelay: "200ms" }}>
+          <div className="fade-up lg:col-span-5 md:self-start mt-4" style={{ animationDelay: "200ms" }}>
             <Emblem />
           </div>
         </div>

@@ -161,7 +161,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    lockScroll(open);
+    lockScroll(open, "menu");
     if (!open) return undefined;
     const onKey = (e) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);

@@ -318,6 +318,45 @@
   transform-origin: 50% 50%;
 }
 
+/* ── Launch loader ─────────────────────────────────────────────────────── */
+.loader {
+  clip-path: inset(0 0 0 0);
+}
+.loader.is-leaving {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.95s cubic-bezier(0.76, 0, 0.24, 1) 0.2s;
+  pointer-events: none;
+}
+.loader.is-leaving .loader-inner {
+  opacity: 0;
+  transform: translate3d(0, -28px, 0);
+  transition: opacity 0.45s ease, transform 0.7s var(--ease-out-soft);
+}
+@keyframes loader-rise {
+  from { transform: translate3d(0, 105%, 0); }
+  to   { transform: none; }
+}
+.loader-word {
+  animation: loader-rise 1.15s var(--ease-out-soft) 0.3s both;
+}
+@keyframes loader-fade {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+.loader-emblem {
+  animation: loader-fade 1s var(--ease-out-soft) both;
+}
+.loader-sub {
+  animation: loader-fade 0.9s var(--ease-out-soft) 0.8s both;
+}
+.loader-msg {
+  animation: loader-fade 0.5s var(--ease-out-soft) both;
+}
+/* While the loader is up, hold the page's entrance animations so they play as it lifts */
+.is-loading .fade-up {
+  animation-play-state: paused;
+}
+
 @keyframes pulse-dot {
   0%, 100% { box-shadow: 0 0 0 0 var(--accent-soft); }
   50%      { box-shadow: 0 0 0 6px transparent; }
@@ -396,6 +435,8 @@
   .marquee-track { animation: none; }
   .status-dot { animation: none; }
   .seal-rotate { animation: none; }
+  .loader-word, .loader-emblem, .loader-sub, .loader-msg { animation: none; }
+  .loader.is-leaving { clip-path: inset(0 0 0 0); opacity: 0; transition: opacity 0.3s ease; }
   .fade-up { animation: none; }
   .frame img { transition: none; }
 }
