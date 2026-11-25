@@ -1,20 +1,22 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { PORTFOLIO } from "../content";
+import { PROJECTS, projectPath } from "../lib/projects";
+import CursorStage from "../components/CursorStage";
 import { Media, Reveal, SectionHead } from "../components/ui";
 
 export default function PortfolioPage({ index }) {
   const [filter, setFilter] = useState(PORTFOLIO.filters[0]);
 
   const counts = useMemo(() => {
-    const map = { [PORTFOLIO.filters[0]]: PORTFOLIO.projects.length };
-    PORTFOLIO.projects.forEach((p) => {
+    const map = { [PORTFOLIO.filters[0]]: PROJECTS.length };
+    PROJECTS.forEach((p) => {
       map[p.category] = (map[p.category] || 0) + 1;
     });
     return map;
   }, []);
 
-  const visible =
-    filter === PORTFOLIO.filters[0] ? PORTFOLIO.projects : PORTFOLIO.projects.filter((p) => p.category === filter);
+  const visible = filter === PORTFOLIO.filters[0] ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
 
   return (
     <section id="portfolio" className="section-y page-top">
@@ -61,19 +63,21 @@ export default function PortfolioPage({ index }) {
         ) : (
           <div key={filter} className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((p, i) => (
-              <article key={`${p.title}-${i}`} className="fade-up group" style={{ animationDelay: `${Math.min(i, 8) * 50}ms` }}>
-                <Media src={p.image} alt={p.title} ratio="4 / 3" className="border border-line" imgClassName="object-top" />
-                <div className="mt-4 flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="display text-[1.65rem] leading-tight transition-colors duration-300 group-hover:text-accent">
-                      {p.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-muted">
-                      {p.category} · {p.tag}
-                    </p>
+              <article key={p.slug} className="fade-up" style={{ animationDelay: `${Math.min(i, 8) * 50}ms` }}>
+                <Link to={projectPath(p)} className="group block" aria-label={`${p.title} — ${PORTFOLIO.viewLabel}`}>
+                  <CursorStage label={PORTFOLIO.viewLabel}>
+                    <Media src={p.cover} alt={p.title} ratio="4 / 3" className="border border-line" imgClassName="object-top" />
+                  </CursorStage>
+                  <div className="mt-4 flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="display text-[1.65rem] leading-tight transition-colors duration-300 group-hover:text-accent">
+                        {p.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-muted">{[p.category, p.type].filter(Boolean).join(" · ")}</p>
+                    </div>
+                    {p.year && <span className="font-mono text-sm text-muted">{p.year}</span>}
                   </div>
-                  <span className="font-mono text-sm text-muted">{p.year}</span>
-                </div>
+                </Link>
               </article>
             ))}
           </div>

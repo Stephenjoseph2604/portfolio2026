@@ -1,588 +1,333 @@
-import { useState, useRef, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import {
-  motion, useMotionValue, useSpring,
-  useTransform, AnimatePresence,
-} from "framer-motion";
-import {
-  ArrowLeft, ExternalLink, Github, Calendar,
-  CheckCircle2, ChevronLeft, ChevronRight, Layers,
-  Shield, Zap, Users, Code2, Database, Globe,
-  Tag, ArrowRight, Star,
-} from "lucide-react";
-import { PROJECT_DETAILS } from "../content";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Expand } from "lucide-react";
+import { PORTFOLIO, SITE } from "../content";
+import { PROJECTS, getNeighbours, getProject, projectPath } from "../lib/projects";
+import Lightbox from "../components/Lightbox";
+import { Button, Media, Reveal, Rich, Tag } from "../components/ui";
 
-/* ── swap these for real assets ─────────────────────────── */
+const D = PORTFOLIO.detail;
+const pad = (n) => String(n).padStart(2, "0");
+const toList = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
-/* ═══════════════════════════════════════════════════════════
-   HELPERS
-══════════════════════════════════════════════════════════ */
-const PRIMARY   = "#2563eb";
-const SECONDARY = "#7c3aed";
-const SUCCESS   = "#10b981";
-
-function toRgba(hex, a) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r},${g},${b},${a})`;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PROJECT DATA
-══════════════════════════════════════════════════════════ */
-const PROJECTS = PROJECT_DETAILS;
-
-/* ═══════════════════════════════════════════════════════════
-   HOOKS
-══════════════════════════════════════════════════════════ */
-function useTilt(strength = 4) {
-  const ref = useRef(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 200, damping: 30 });
-  const sy = useSpring(my, { stiffness: 200, damping: 30 });
-  const rotateX = useTransform(sy, [-0.5, 0.5], [`${strength}deg`, `-${strength}deg`]);
-  const rotateY = useTransform(sx, [-0.5, 0.5], [`-${strength}deg`, `${strength}deg`]);
-  const onMove = (e) => {
-    if (!ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    mx.set((e.clientX - r.left) / r.width - 0.5);
-    my.set((e.clientY - r.top) / r.height - 0.5);
-  };
-  const onLeave = () => { mx.set(0); my.set(0); };
-  return { ref, rotateX, rotateY, onMove, onLeave };
-}
-
-/* ═══════════════════════════════════════════════════════════
-   SHARED SMALL COMPONENTS
-══════════════════════════════════════════════════════════ */
-function SectionLabel({ children, accent }) {
+/* One numbered row: label on the left (sticky on desktop), content on the right */
+function Block({ number, label, children }) {
   return (
-    <div className="flex items-center gap-3 mb-5">
-      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-        style={{ background: accent, boxShadow: `0 0 6px ${accent}` }} />
-      <span className="text-[9px] font-black uppercase tracking-[0.24em] text-[#475569]"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-        {children}
-      </span>
-      <div className="flex-1 h-px"
-        style={{ background: `linear-gradient(90deg, ${toRgba(accent, 0.45)}, transparent)` }} />
-    </div>
+    <Reveal as="section" className="grid gap-5 border-t border-line py-10 md:grid-cols-12 md:gap-8 md:py-14">
+      <div className="md:col-span-3">
+        <p className="eyebrow flex items-center gap-3 md:sticky md:top-28">
+          <span className="text-accent">{pad(number)}</span>
+          {label}
+        </p>
+      </div>
+      <div className="md:col-span-9">{children}</div>
+    </Reveal>
   );
 }
 
-function GlassCard({ children, className = "", style = {}, delay = 0, accent }) {
+function Paragraphs({ text, lead = false }) {
   return (
-    <motion.div
-      className={`relative rounded-2xl border border-[#1e293b] bg-[#080b12] overflow-hidden ${className}`}
-      style={{ boxShadow: `0 0 0 1px ${toRgba(accent || PRIMARY, 0.04)}`, ...style }}
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.52, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <div className="absolute top-0 left-0 right-0 h-[1.5px] pointer-events-none"
-        style={{ background: `linear-gradient(90deg, transparent, ${toRgba(accent || PRIMARY, 0.5)}, transparent)` }} />
-      <div className="absolute inset-0 opacity-[0.028] pointer-events-none"
-        style={{ backgroundImage: "radial-gradient(circle,#94a3b8 1px,transparent 1px)", backgroundSize: "22px 22px" }} />
-      {children}
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   IMAGE VIEWER
-══════════════════════════════════════════════════════════ */
-function ImageViewer({ images, accent }) {
-  const [active, setActive] = useState(0);
-  const { ref, rotateX, rotateY, onMove, onLeave } = useTilt(3);
-
-  return (
-    <div className="space-y-3">
-      <div ref={ref} style={{ perspective: "900px" }} onMouseMove={onMove} onMouseLeave={onLeave}>
-        <motion.div
-          className="relative rounded-2xl overflow-hidden border border-[#1e293b]"
-          style={{ rotateX, rotateY, transformStyle: "preserve-3d",
-            boxShadow: `0 0 0 1px ${toRgba(accent, 0.18)}, 0 32px 72px rgba(0,0,0,0.55)` }}
+    <div className="space-y-5">
+      {toList(text).map((t, i) => (
+        <p
+          key={i}
+          className={
+            lead && i === 0
+              ? "display t-lead accent-em max-w-3xl text-ink"
+              : "prose-em max-w-2xl text-base leading-[1.75] text-ink-soft md:text-lg"
+          }
         >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={active}
-              src={images[active]}
-              alt={`Screenshot ${active + 1}`}
-              className="w-full object-cover select-none"
-              style={{ height: "clamp(220px, 38vw, 440px)" }}
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-              draggable={false}
-            />
-          </AnimatePresence>
-
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/75 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-[2px]"
-            style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)` }} />
-
-          {/* Counter badge */}
-          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg border border-[#1e293b] bg-[#080b12]/90"
-            style={{ backdropFilter: "blur(10px)" }}>
-            <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#64748b]"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              {active + 1} / {images.length}
-            </span>
-          </div>
-
-          {images.length > 1 && (
-            <>
-              {[{ dir: -1, Icon: ChevronLeft, side: "left-3" }, { dir: 1, Icon: ChevronRight, side: "right-3" }].map(({ dir, Icon, side }) => (
-                <button key={dir}
-                  onClick={() => setActive((i) => (i + dir + images.length) % images.length)}
-                  className={`absolute ${side} top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center border border-[#1e293b] bg-[#080b12]/90 text-[#64748b] hover:text-white hover:border-[rgba(37,99,235,0.45)] transition-all duration-250`}
-                  style={{ backdropFilter: "blur(10px)" }}>
-                  <Icon className="w-4 h-4" />
-                </button>
-              ))}
-            </>
-          )}
-        </motion.div>
-      </div>
-
-      {images.length > 1 && (
-        <div className="flex gap-2">
-          {images.map((img, i) => (
-            <button key={i} onClick={() => setActive(i)}
-              className="relative flex-1 rounded-xl overflow-hidden border transition-all duration-300"
-              style={{
-                borderColor: i === active ? toRgba(accent, 0.65) : "#1e293b",
-                boxShadow: i === active ? `0 0 12px ${toRgba(accent, 0.3)}` : "none",
-              }}>
-              <img src={img} alt="" className="w-full h-14 object-cover" draggable={false} />
-              {i !== active && <div className="absolute inset-0 bg-[#050508]/55" />}
-            </button>
-          ))}
-        </div>
-      )}
+          <Rich text={t} />
+        </p>
+      ))}
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   METRIC CARD
-══════════════════════════════════════════════════════════ */
-function MetricCard({ val, lbl, accent, delay }) {
-  const [hovered, setHovered] = useState(false);
+function NeighbourCard({ project, direction }) {
+  const next = direction === "next";
   return (
-    <motion.div
-      className="relative flex flex-col items-center justify-center p-4 rounded-xl border text-center overflow-hidden cursor-default"
-      style={{
-        background: hovered ? toRgba(accent, 0.07) : "#0d1117",
-        borderColor: hovered ? toRgba(accent, 0.5) : "#1e293b",
-        boxShadow: hovered ? `0 0 0 1px ${toRgba(accent, 0.2)}, 0 8px 24px ${toRgba(accent, 0.12)}` : "none",
-        transition: "all 0.32s ease",
-      }}
-      initial={{ opacity: 0, y: 14, scale: 0.92 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45, delay, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ scale: 1.05, y: -2 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <Link
+      to={projectPath(project)}
+      className={`group flex items-center gap-5 rounded-2xl border border-line bg-surface p-4 transition-colors duration-300 hover:border-line-strong md:p-5 ${
+        next ? "flex-row-reverse text-right" : ""
+      }`}
     >
-      <div className="absolute inset-0 pointer-events-none transition-opacity duration-400"
-        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 110%,${toRgba(accent, 0.22)} 0%,transparent 70%)`, opacity: hovered ? 1 : 0 }} />
-      <p className="text-2xl font-black leading-none mb-1 relative z-10"
-        style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.04em", color: accent,
-          textShadow: hovered ? `0 0 18px ${toRgba(accent, 0.55)}` : "none", transition: "text-shadow 0.3s" }}>
-        {val}
-      </p>
-      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#475569] relative z-10"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{lbl}</p>
-      <motion.div className="absolute bottom-0 left-0 right-0 h-[1.5px]"
-        animate={{ scaleX: hovered ? 1 : 0 }}
-        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-        style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)`, transformOrigin: "left" }} />
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   TECH CARD
-══════════════════════════════════════════════════════════ */
-function TechCard({ item, delay }) {
-  const [hovered, setHovered] = useState(false);
-  const { Icon } = item;
-  return (
-    <motion.div
-      className="relative flex flex-col items-center gap-2 p-4 rounded-xl border cursor-default overflow-hidden"
-      style={{
-        background: hovered ? toRgba(item.accent, 0.08) : "#0d1117",
-        borderColor: hovered ? toRgba(item.accent, 0.5) : "#1e293b",
-        boxShadow: hovered ? `0 0 0 1px ${toRgba(item.accent, 0.2)}, 0 8px 22px ${toRgba(item.accent, 0.14)}` : "none",
-        transition: "all 0.32s ease",
-      }}
-      initial={{ opacity: 0, y: 16, scale: 0.93 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45, delay, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -3, scale: 1.06 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="absolute inset-0 pointer-events-none transition-opacity duration-400"
-        style={{ background: `radial-gradient(ellipse 80% 70% at 50% 110%,${toRgba(item.accent, 0.18)} 0%,transparent 70%)`, opacity: hovered ? 1 : 0 }} />
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center border flex-shrink-0"
-        style={{ background: toRgba(item.accent, 0.1), borderColor: toRgba(item.accent, 0.3),
-          boxShadow: hovered ? `0 0 14px ${toRgba(item.accent, 0.3)}` : "none", transition: "box-shadow 0.3s" }}>
-        <Icon className="w-4 h-4" style={{ color: item.accent }} />
+      <Media src={project.cover} alt="" ratio="4 / 3" className="w-28 shrink-0 !rounded-lg border border-line md:w-36" imgClassName="object-top" />
+      <div className="min-w-0 flex-1">
+        <p className={`eyebrow flex items-center gap-2 ${next ? "justify-end" : ""}`}>
+          {!next && <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-1" aria-hidden="true" />}
+          {next ? D.next : D.prev}
+          {next && <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />}
+        </p>
+        <p className="display mt-2 truncate text-2xl leading-tight transition-colors duration-300 group-hover:text-accent md:text-3xl">
+          {project.title}
+        </p>
+        {project.type && <p className="mt-1 truncate text-sm text-muted">{project.type}</p>}
       </div>
-      <span className="text-[11px] font-black text-[#f1f5f9] text-center leading-tight relative z-10"
-        style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.015em" }}>{item.name}</span>
-      <span className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#475569] relative z-10"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{item.cat}</span>
-      <motion.div className="absolute bottom-0 left-0 right-0 h-[1.5px]"
-        animate={{ scaleX: hovered ? 1 : 0 }}
-        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-        style={{ background: `linear-gradient(90deg,transparent,${item.accent},transparent)`, transformOrigin: "left" }} />
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   FEATURE ITEM
-══════════════════════════════════════════════════════════ */
-function FeatureItem({ text, accent, delay }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <motion.div
-      className="flex items-start gap-3 p-3.5 rounded-xl border transition-all duration-280 cursor-default"
-      style={{
-        background: hovered ? toRgba(accent, 0.05) : "transparent",
-        borderColor: hovered ? toRgba(accent, 0.35) : "#1e293b",
-      }}
-      initial={{ opacity: 0, x: -12 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay, ease: [0.16, 1, 0.3, 1] }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5 transition-all duration-250"
-        style={{ color: hovered ? accent : "#334155" }} />
-      <span className="text-[12px] text-[#64748b] leading-snug"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{text}</span>
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PROJECT NAV CARD
-══════════════════════════════════════════════════════════ */
-function ProjectNavCard({ project, label, dir }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <Link to={`/project/${project.id}`} className="flex-1 min-w-0">
-      <motion.div
-        className="relative flex items-center gap-4 p-5 rounded-2xl border border-[#1e293b] bg-[#080b12] overflow-hidden cursor-pointer"
-        style={{
-          borderColor: hovered ? toRgba(project.accent, 0.5) : "#1e293b",
-          boxShadow: hovered ? `0 8px 28px ${toRgba(project.accent, 0.14)}` : "none",
-          transition: "all 0.32s ease",
-        }}
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: "spring", stiffness: 340, damping: 26 }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        <div className="absolute inset-0 pointer-events-none transition-opacity duration-400"
-          style={{ background: `radial-gradient(ellipse 70% 70% at 50% 110%,${toRgba(project.accent, 0.1)} 0%,transparent 70%)`, opacity: hovered ? 1 : 0 }} />
-        <div className="absolute top-0 left-0 right-0 h-[1.5px]"
-          style={{ background: `linear-gradient(90deg,transparent,${toRgba(project.accent, hovered ? 0.55 : 0.15)},transparent)`, transition: "all 0.35s" }} />
-        {dir === -1 && <ChevronLeft className="w-4 h-4 text-[#475569] flex-shrink-0" />}
-        <div className="flex-1 min-w-0">
-          <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#475569] block mb-0.5"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</span>
-          <span className="text-sm font-black text-[#f1f5f9] block leading-tight mb-0.5 truncate"
-            style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.025em" }}>
-            {project.title} {project.subtitle}
-          </span>
-          <span className="text-[10px] text-[#475569]"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}>{project.category}</span>
-        </div>
-        {dir === 1 && <ChevronRight className="w-4 h-4 text-[#475569] flex-shrink-0" />}
-      </motion.div>
     </Link>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN PAGE
-══════════════════════════════════════════════════════════ */
 export default function ProjectDetails() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const project = PROJECTS.find((p) => p.id === id) ?? PROJECTS[0];
-  const { accent } = project;
-  const idx  = PROJECTS.findIndex((p) => p.id === project.id);
-  const prev = PROJECTS[(idx - 1 + PROJECTS.length) % PROJECTS.length];
-  const next = PROJECTS[(idx + 1) % PROJECTS.length];
+  const { slug } = useParams();
+  const project = getProject(slug);
+  const [viewing, setViewing] = useState(null);
+  const closeViewer = useCallback(() => setViewing(null), []);
 
-  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [id]);
+  /* Browser tab title */
+  useEffect(() => {
+    if (!project) return undefined;
+    const previous = document.title;
+    document.title = `${project.title} — ${SITE.fullName}`;
+    return () => {
+      document.title = previous;
+    };
+  }, [project]);
 
-  const infoRows = [
-    { Icon: Tag,      label: "Category", val: project.category },
-    { Icon: Calendar, label: "Year",     val: project.year     },
-    { Icon: Zap,      label: "Status",   val: project.status   },
-    { Icon: Users,    label: "Type",     val: "Full-Stack"     },
-  ];
+  if (!project) {
+    return (
+      <section className="section-y page-top">
+        <div className="container-x">
+          <p className="eyebrow border-t border-line pt-5">{D.eyebrow}</p>
+          <h1 className="display t-h1 mt-10 max-w-4xl">
+            <Rich text={D.notFound.title} />
+          </h1>
+          <p className="mt-6 max-w-md text-lg text-ink-soft">{D.notFound.text}</p>
+          <Button to="/portfolio" className="mt-10">
+            {D.notFound.label}
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
+  const p = project;
+  const position = PROJECTS.findIndex((x) => x.slug === p.slug) + 1;
+  const { prev, next } = getNeighbours(p.slug);
+
+  const meta = [
+    [D.meta.type, p.type],
+    [D.meta.year, p.year],
+    [D.meta.role, p.role],
+    [D.meta.client, p.client],
+    [D.meta.duration, p.duration],
+    [D.meta.status, p.status],
+  ].filter(([, v]) => v);
+
+  /* The cover is already shown large, so the gallery skips duplicates of it */
+  const gallery = (p.screenshots || []).filter((s) => s?.src && s.src !== p.cover);
+
+  /* Build the numbered sections that have content */
+  const S = D.sections;
+  const blocks = [];
+  if (p.overview) blocks.push({ key: "overview", label: S.overview, body: <Paragraphs text={p.overview} lead /> });
+  if (p.challenge) blocks.push({ key: "challenge", label: S.challenge, body: <Paragraphs text={p.challenge} /> });
+  if (p.solution) blocks.push({ key: "solution", label: S.solution, body: <Paragraphs text={p.solution} /> });
+  if (p.features?.length)
+    blocks.push({
+      key: "features",
+      label: S.features,
+      body: (
+        <ul className="grid gap-x-10 sm:grid-cols-2">
+          {p.features.map((f) => (
+            <li key={f} className="flex gap-4 border-b border-line py-4 leading-snug text-ink-soft first:pt-0 sm:[&:nth-child(2)]:pt-0">
+              <span className="mt-[0.65em] h-px w-5 shrink-0 bg-accent" aria-hidden="true" />
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+      ),
+    });
+  if (p.stack?.length)
+    blocks.push({
+      key: "stack",
+      label: S.stack,
+      body: (
+        <ul className="flex flex-wrap gap-2.5">
+          {p.stack.map((t) => (
+            <li key={t}>
+              <Tag className="!px-4 !py-2 !text-[0.75rem] !text-ink">{t}</Tag>
+            </li>
+          ))}
+        </ul>
+      ),
+    });
+  if (p.results?.length)
+    blocks.push({
+      key: "results",
+      label: S.results,
+      body: (
+        <dl className="grid grid-cols-2 border-y border-line md:grid-cols-4">
+          {p.results.map((r, i) => (
+            <div
+              key={r.label}
+              className={`flex flex-col py-6 pr-3 md:border-l md:border-line md:px-6 md:first:border-l-0 md:first:pl-0 ${
+                i % 2 ? "border-l border-line pl-4" : ""
+              } ${i > 1 ? "border-t border-line md:border-t-0" : ""}`}
+            >
+              <dt className="eyebrow order-2 mt-3">{r.label}</dt>
+              <dd className="display text-4xl leading-none text-accent md:text-5xl">{r.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ),
+    });
+
+  const links = [
+    p.links?.live && { href: p.links.live, label: D.live },
+    p.links?.github && { href: p.links.github, label: D.github },
+  ].filter(Boolean);
 
   return (
-    <div className="min-h-screen  pt-24 pb-28 relative overflow-hidden" style={{ background: "#050508" }}>
-
-      {/* ── Atmosphere ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[700px] h-[400px] opacity-[0.09]"
-          style={{ background: `radial-gradient(ellipse,${accent} 0%,transparent 70%)`, filter: "blur(90px)" }} />
-        <div className="absolute top-1/2 -right-40 w-[420px] h-[420px] rounded-full opacity-[0.05]"
-          style={{ background: `radial-gradient(circle,${SECONDARY} 0%,transparent 70%)`, filter: "blur(80px)" }} />
-        <div className="absolute inset-0 opacity-[0.02]"
-          style={{ backgroundImage: "radial-gradient(circle,#94a3b8 1px,transparent 1px)", backgroundSize: "36px 36px" }} />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
-
-        {/* ── Breadcrumb ── */}
-        <motion.div className="flex items-center gap-3 mb-10"
-          initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}>
-          <motion.button onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#1e293b] bg-[#080b12] text-[#64748b] hover:text-[#f1f5f9] hover:border-[rgba(37,99,235,0.4)] transition-all duration-250"
-            whileHover={{ scale: 1.04, x: -2 }} whileTap={{ scale: 0.95 }}>
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em]"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}>Back</span>
-          </motion.button>
-          <div className="flex items-center gap-1.5">
-            <Link to="/portfolio"
-              className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#334155] hover:text-[#64748b] transition-colors"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}>Portfolio</Link>
-            <span className="text-[#1e293b]">/</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#475569]"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}>{project.title}</span>
-          </div>
-        </motion.div>
-
-        {/* ── Hero Header ── */}
-        <motion.div className="mb-14 relative pl-5"
-          initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}>
-          <motion.div className="absolute left-0 top-0 bottom-0 w-[2px] rounded-full"
-            style={{ background: `linear-gradient(180deg,${accent},${SECONDARY})` }}
-            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }} />
-
-          {/* Eyebrow */}
-          <div className="flex flex-wrap items-center gap-3 mb-5">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#1e293b] bg-[#080b12]">
-              <span className="w-2 h-2 rounded-full animate-pulse"
-                style={{ background: project.status === "Live" ? SUCCESS : accent,
-                  boxShadow: `0 0 8px ${project.status === "Live" ? SUCCESS : accent}` }} />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#64748b]"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}>{project.status}</span>
-            </div>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] font-black font-mono uppercase tracking-[0.14em] rounded-lg border"
-              style={{ color: accent, borderColor: toRgba(accent, 0.45), background: toRgba(accent, 0.08) }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 5px ${accent}` }} />
-              {project.category}
-            </span>
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-3 h-3 text-[#475569]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#475569]"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}>{project.year}</span>
-            </div>
-          </div>
-
-          {/* Title */}
-          <h1 className="font-black leading-[0.9] mb-4"
-            style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.045em", fontSize: "clamp(2.4rem,5.5vw,4.2rem)" }}>
-            <span style={{ background: "linear-gradient(135deg,#ffffff 0%,#94a3b8 55%,#475569 100%)",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {project.title}
-            </span>
-            <br />
-            <span style={{ background: `linear-gradient(135deg,${accent} 0%,${SECONDARY} 100%)`,
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {project.subtitle}
-            </span>
-          </h1>
-
-          <p className="text-[#64748b] text-sm md:text-[15px] max-w-2xl leading-relaxed mb-8"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}>{project.tagline}</p>
-
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-3">
-            <motion.a href={project.live} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm text-white"
-              style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.02em",
-                background: `linear-gradient(135deg,${accent},${SECONDARY})`,
-                boxShadow: `0 6px 22px ${toRgba(accent, 0.32)}` }}
-              whileHover={{ scale: 1.04, y: -1, boxShadow: `0 14px 32px ${toRgba(accent, 0.44)}` }}
-              whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 22 }}>
-              <ExternalLink className="w-3.5 h-3.5" /> Live Demo
-            </motion.a>
-            <motion.a href={project.github} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm border border-[#1e293b] bg-[#080b12] text-[#64748b] hover:text-[#f1f5f9] hover:border-[rgba(37,99,235,0.35)] transition-all duration-250"
-              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", letterSpacing: "0.03em" }}
-              whileHover={{ scale: 1.03, y: -1 }} whileTap={{ scale: 0.97 }}>
-              <Github className="w-3.5 h-3.5" /> View Code
-            </motion.a>
-          </div>
-        </motion.div>
-
-        {/* ── Image + Sidebar ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 mb-6">
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08 }}>
-            <ImageViewer images={project.images} accent={accent} />
-          </motion.div>
-
-          <div className="flex flex-col gap-4">
-            {/* Metrics */}
-            <GlassCard accent={accent} delay={0.12}>
-              <div className="p-5">
-                <SectionLabel accent={accent}>Key Metrics</SectionLabel>
-                <div className="grid grid-cols-2 gap-2">
-                  {project.metrics.map((m, i) => (
-                    <MetricCard key={m.lbl} {...m} accent={accent} delay={i * 0.055} />
-                  ))}
-                </div>
-              </div>
-            </GlassCard>
-
-            {/* Info */}
-            <GlassCard accent={accent} delay={0.18}>
-              <div className="p-5">
-                <SectionLabel accent={accent}>Project Info</SectionLabel>
-                <div className="space-y-3">
-                  {infoRows.map(({ Icon, label, val }) => (
-                    <div key={label} className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center border border-[#1e293b] bg-[#0d1117] flex-shrink-0">
-                        <Icon className="w-3.5 h-3.5 text-[#475569]" />
-                      </div>
-                      <div className="flex-1 flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#475569]"
-                          style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</span>
-                        <span className="text-[11px] font-bold text-[#94a3b8]"
-                          style={{ fontFamily: "'JetBrains Mono', monospace" }}>{val}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </GlassCard>
-          </div>
-        </div>
-
-        {/* ── Overview / Challenge / Solution ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-          {[
-            { heading: "Overview",  body: project.overview,  a: accent    },
-            { heading: "Challenge", body: project.challenge, a: "#d97706" },
-            { heading: "Solution",  body: project.solution,  a: SUCCESS   },
-          ].map(({ heading, body, a }, i) => (
-            <GlassCard key={heading} accent={a} delay={i * 0.07}>
-              <div className="p-6">
-                <SectionLabel accent={a}>{heading}</SectionLabel>
-                <p className="text-[#64748b] text-[13px] leading-relaxed"
-                  style={{ fontFamily: "'JetBrains Mono', monospace" }}>{body}</p>
-              </div>
-            </GlassCard>
-          ))}
-        </div>
-
-        {/* ── Features ── */}
-        <GlassCard accent={accent} className="mb-5">
-          <div className="p-6 md:p-8">
-            <SectionLabel accent={accent}>Core Features</SectionLabel>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-              {project.features.map((f, i) => (
-                <FeatureItem key={f} text={f} accent={accent} delay={i * 0.05} />
-              ))}
-            </div>
-          </div>
-        </GlassCard>
-
-        {/* ── Tech Stack ── */}
-        <GlassCard accent={SECONDARY} className="mb-14">
-          <div className="p-6 md:p-8">
-            <SectionLabel accent={SECONDARY}>Tech Stack</SectionLabel>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-              {project.techStack.map((t, i) => (
-                <TechCard key={t.name} item={t} delay={i * 0.055} />
-              ))}
-            </div>
-          </div>
-        </GlassCard>
-
-        {/* ── Prev / Next ── */}
-        <motion.div className="flex flex-col sm:flex-row gap-3 mb-8"
-          initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.5 }}>
-          <ProjectNavCard project={prev} label="← Previous Project" dir={-1} />
-          <ProjectNavCard project={next} label="Next Project →"     dir={1}  />
-        </motion.div>
-
-        {/* ── Bottom CTA ── */}
-        <motion.div
-          className="relative p-8 md:p-10 rounded-2xl border border-[#1e293b] overflow-hidden text-center"
-          style={{ background: toRgba(accent, 0.04) }}
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.55 }}>
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: `radial-gradient(ellipse 60% 80% at 50% 110%,${toRgba(accent, 0.14)} 0%,transparent 70%)` }} />
-          <div className="absolute top-0 left-0 right-0 h-[1.5px]"
-            style={{ background: `linear-gradient(90deg,transparent,${accent},${SECONDARY},transparent)` }} />
-          <div className="absolute inset-0 opacity-[0.025] pointer-events-none"
-            style={{ backgroundImage: "radial-gradient(circle,#94a3b8 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
-
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#475569] mb-3 relative z-10"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-            Interested in working together?
+    <article className="page-top pb-[clamp(4rem,9vw,7rem)]">
+      <div className="container-x">
+        {/* ── Top rule ── */}
+        <div className="fade-up flex flex-wrap items-center justify-between gap-4 border-t border-line pt-5">
+          <Link to="/portfolio" className="eyebrow group inline-flex items-center gap-2 text-ink hover:text-accent">
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-1" aria-hidden="true" />
+            {D.back}
+          </Link>
+          <p className="eyebrow">
+            ({D.eyebrow}) {pad(position)} / {pad(PROJECTS.length)}
           </p>
-          <h3 className="text-2xl md:text-3xl font-black text-[#f1f5f9] mb-6 relative z-10"
-            style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.03em" }}>
-            Let's build your next{" "}
-            <span style={{ background: `linear-gradient(135deg,${accent},${SECONDARY})`,
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              project together.
-            </span>
-          </h3>
+        </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">
-            <Link to="/contact">
-              <motion.div
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-black text-sm text-white"
-                style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "-0.02em",
-                  background: `linear-gradient(135deg,${accent},${SECONDARY})`,
-                  boxShadow: `0 8px 26px ${toRgba(accent, 0.3)}` }}
-                whileHover={{ scale: 1.04, y: -1, boxShadow: `0 14px 34px ${toRgba(accent, 0.44)}` }}
-                whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 22 }}>
-                Get In Touch <ArrowRight className="w-3.5 h-3.5" />
-              </motion.div>
-            </Link>
-            <Link to="/portfolio">
-              <motion.div
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border border-[#1e293b] bg-[#080b12] text-[#64748b] hover:text-[#f1f5f9] hover:border-[rgba(37,99,235,0.35)] transition-all duration-250"
-                style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem" }}
-                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                View All Projects
-              </motion.div>
-            </Link>
+        {/* ── Title ── */}
+        <header className="mt-10 grid gap-8 md:mt-14 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-8">
+            <p className="fade-up eyebrow" style={{ animationDelay: "60ms" }}>
+              {[p.category, p.year].filter(Boolean).join(" · ")}
+            </p>
+            <h1 className="fade-up display t-h1 mt-5 text-balance" style={{ animationDelay: "120ms" }}>
+              {p.title}
+            </h1>
+            {p.summary && (
+              <p className="fade-up prose-em mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft md:text-xl" style={{ animationDelay: "180ms" }}>
+                <Rich text={p.summary} />
+              </p>
+            )}
           </div>
-        </motion.div>
+          {links.length > 0 && (
+            <div className="fade-up flex flex-wrap gap-3 lg:col-span-4 lg:justify-end" style={{ animationDelay: "240ms" }}>
+              {links.map((l, i) => (
+                <Button key={l.href} href={l.href} variant={i === 0 ? "solid" : "outline"}>
+                  {l.label}
+                </Button>
+              ))}
+            </div>
+          )}
+        </header>
 
+        {/* ── Meta ── */}
+        {meta.length > 0 && (
+          <dl
+            className="fade-up mt-10 grid grid-cols-2 border-y border-line sm:grid-cols-3 lg:flex lg:flex-wrap"
+            style={{ animationDelay: "260ms" }}
+          >
+            {meta.map(([label, value]) => (
+              <div key={label} className="border-b border-line py-4 pr-4 lg:flex-1 lg:border-b-0 lg:border-l lg:px-6 lg:first:border-l-0 lg:first:pl-0">
+                <dt className="eyebrow !text-[0.62rem]">{label}</dt>
+                <dd className="mt-1.5 text-sm font-medium">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
+        {/* ── Cover ── */}
+        {p.cover && (
+          <Reveal className="mt-10 md:mt-14">
+            <button
+              type="button"
+              onClick={() => setViewing({ image: p.cover, title: p.title, caption: p.type })}
+              className="group relative block w-full text-left"
+              aria-label={`View ${p.title} full size`}
+            >
+              <Media src={p.cover} alt={p.title} ratio="16 / 9" eager className="border border-line" imgClassName="object-top" />
+              <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--bg)_88%,transparent)] px-3.5 py-2 text-xs font-medium text-ink shadow-[var(--shadow)] backdrop-blur-md transition-opacity duration-300 pointer-fine:opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Expand className="h-3.5 w-3.5" aria-hidden="true" />
+                {PORTFOLIO.viewLabel}
+              </span>
+            </button>
+          </Reveal>
+        )}
+
+        {/* ── Story ── */}
+        {blocks.length > 0 && (
+          <div className="mt-14 border-b border-line md:mt-20">
+            {blocks.map((b, i) => (
+              <Block key={b.key} number={i + 1} label={b.label}>
+                {b.body}
+              </Block>
+            ))}
+          </div>
+        )}
+
+        {/* ── Screenshots ── */}
+        {gallery.length > 0 && (
+          <section className="mt-14 md:mt-20">
+            <Reveal className="flex items-center justify-between gap-4 border-t border-line pt-5">
+              <p className="eyebrow flex items-center gap-3">
+                <span className="text-accent">{pad(blocks.length + 1)}</span>
+                {S.screenshots}
+              </p>
+              <span className="font-mono text-xs text-muted">{pad(gallery.length)}</span>
+            </Reveal>
+            <div className="mt-8 grid gap-x-6 gap-y-10 md:grid-cols-2">
+              {gallery.map((s, i) => (
+                <Reveal
+                  as="figure"
+                  key={`${s.caption}-${i}`}
+                  delay={(i % 2) * 90}
+                  className={gallery.length % 2 === 1 && i === 0 ? "md:col-span-2" : ""}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setViewing({ image: s.src, title: s.caption || p.title, caption: p.title })}
+                    className="group relative block w-full"
+                    aria-label={`View ${s.caption || "screenshot"} full size`}
+                  >
+                    <Media
+                      src={s.src}
+                      alt={s.caption || `${p.title} screenshot`}
+                      ratio={gallery.length % 2 === 1 && i === 0 ? "16 / 8" : "16 / 10"}
+                      className="border border-line"
+                      imgClassName="object-top"
+                    />
+                    <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full bg-[color-mix(in_srgb,var(--bg)_88%,transparent)] text-ink shadow-[var(--shadow)] backdrop-blur-md transition-opacity duration-300 pointer-fine:opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100">
+                      <Expand className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                  </button>
+                  {s.caption && (
+                    <figcaption className="mt-3 flex items-baseline gap-3 text-sm text-ink-soft">
+                      <span className="font-mono text-xs text-muted">{pad(i + 1)}</span>
+                      {s.caption}
+                    </figcaption>
+                  )}
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── Contact prompt ── */}
+        {D.contact && (
+          <Reveal className="mt-16 flex flex-col items-start justify-between gap-6 rounded-2xl border border-line bg-surface p-6 md:mt-24 md:flex-row md:items-center md:p-8">
+            <p className="display max-w-xl text-2xl leading-snug md:text-3xl">{D.contact.text}</p>
+            <Button to={D.contact.to}>{D.contact.label}</Button>
+          </Reveal>
+        )}
+
+        {/* ── Previous / next ── */}
+        {prev && next && (
+          <nav aria-label="More projects" className="mt-6 grid gap-4 md:grid-cols-2">
+            <NeighbourCard project={prev} direction="prev" />
+            <NeighbourCard project={next} direction="next" />
+          </nav>
+        )}
       </div>
-    </div>
+
+      <Lightbox item={viewing} onClose={closeViewer} />
+    </article>
   );
 }

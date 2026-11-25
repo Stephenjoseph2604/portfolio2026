@@ -34,7 +34,7 @@ import t8 from "./assets/training/t8.webp";
 import t10 from "./assets/training/t10.webp";
 import t11 from "./assets/training/t11.webp";
 import t12 from "./assets/training/t12.webp";
-import t13 from "./assets/training/t13.webp";
+// import t13 from "./assets/training/t13.webp";
 import t16 from "./assets/training/t16.webp";
 import t17 from "./assets/training/t17.webp";
 import t18 from "./assets/training/t18.webp";
@@ -51,20 +51,35 @@ import t28 from "./assets/training/t28.webp";
 import t29 from "./assets/training/t29.webp";
 import t30 from "./assets/training/t30.webp";
 import t31 from "./assets/training/t31.webp";
+import t34 from "./assets/training/t34.png";
+import t35 from "./assets/training/t35.png";
 import t51 from "./assets/training/t51.webp";
 
-/* ── Images: projects ───────────────────────────────────────────────────── */
+/* ── Images: projects (covers + screenshots) ─────────────────────────────── */
 import imgCrm from "./assets/projects/xamify.webp";
 import imgJob from "./assets/projects/skillbridge.webp";
-import imgProfile from "./assets/projects/profile.webp";
-import imgAdminMcq from "./assets/projects/adminmcq.webp";
-import imgCodeEditor from "./assets/projects/codeeditor.webp";
-import imgNotes from "./assets/projects/notes1.webp";
-import imgExplain from "./assets/projects/explain.webp";
-import imgQuiz from "./assets/projects/quiz.webp";
+import imgJobList from "./assets/projects/jobportal.webp";
+import imgJobProfile from "./assets/projects/profile.webp";
+import imgMcqHome from "./assets/projects/homemcq.webp";
+import imgMcqQuiz from "./assets/projects/quiz.webp";
+import imgMcqAdmin from "./assets/projects/adminmcq.webp";
+import imgMcqStudents from "./assets/projects/stmcq.webp";
+import imgContestHome from "./assets/projects/code1.webp";
+import imgContestStart from "./assets/projects/code2.webp";
+import imgContestEditor from "./assets/projects/codeeditor.webp";
 import imgAlgo1 from "./assets/projects/algo1.webp";
 import imgAlgo2 from "./assets/projects/algo2.webp";
+import imgExplain from "./assets/projects/explain.webp";
+import imgExplain2 from "./assets/projects/explain2.webp";
+import imgNotes1 from "./assets/projects/notes1.webp";
+import imgNotes2 from "./assets/projects/notes2.webp";
+import imgBus3 from "./assets/projects/bus3.webp";
+import imgBus10 from "./assets/projects/bus10.webp";
+import imgBooks from "./assets/projects/book3.webp";
 import imgVv from "./assets/projects/vv.webp";
+import imgPassword from "./assets/projects/password3.webp";
+import imgStudentDash from "./assets/projects/student6.webp";
+import imgOldPortfolio from "./assets/projects/porfolio9.webp";
 
 /* ── Images: skill logos ────────────────────────────────────────────────── */
 import reactLogo from "./assets/skills/react.png";
@@ -96,8 +111,6 @@ import hobbyChess from "./assets/hobbies/chess.webp";
 import hobbyCube from "./assets/hobbies/cube.webp";
 import hobbyKeys from "./assets/hobbies/keys.webp";
 
-/* Icons are only used by the (currently unrouted) project-detail page below */
-import { Code2, Layers, Database, Shield, Globe, Zap, Star } from "lucide-react";
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -116,7 +129,7 @@ export const SITE = {
   locationShort: "Coimbatore, IN",
   timeZone: "Asia/Kolkata",                    // drives the live clock
   timeZoneLabel: "IST",
-  email: "stephenjosephm@gmail.com",
+  email: "sj9824384@gmail.com",
   phone: "+91 98765 43210",
   phoneHref: "tel:+919876543210",
   cvUrl: "/cv.pdf",                            // put the PDF in /public
@@ -176,9 +189,9 @@ export const HERO = {
     { value: "10+",   label: "Projects shipped" },
   ],
   stackLabel: "Core stack",
-  stack: ["Java", "Spring Boot", "React", "Node.js", "MySQL", "MongoDB", "Kotlin"],
-  portrait: { src: portraitStudio, alt: "Portrait of Stephen Joseph", caption: "Fig. 01 — Developer" },
-  inset:    { src: classroomPhoto, alt: "Stephen Joseph leading a classroom session", caption: "Fig. 02 — Trainer" },
+  stack: ["Java", "Spring Boot", "Java Script", "React", "Node.js", "MySQL", "MongoDB", "Kotlin", "Type Script", "Python"],
+  portrait: { src: portraitStudio, alt: "Portrait of Stephen Joseph", caption: " Developer" },
+  inset:    { src: classroomPhoto, alt: "Stephen Joseph leading a classroom session", caption: " Trainer" },
   scrollHint: "Scroll to explore",
 };
 
@@ -445,7 +458,8 @@ export const PROGRAMS = {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    6. HOME — SELECTED WORK
-   The first project is shown large; the rest sit two per row.
+   Picks projects from the Portfolio list (section 9) by slug.
+   The first one is shown large; the rest sit two per row.
 ═══════════════════════════════════════════════════════════════════════════ */
 export const SELECTED_WORK = {
   eyebrow: "Selected work",
@@ -453,33 +467,9 @@ export const SELECTED_WORK = {
   intro: "A few projects I'm proud of — real systems, real users, real constraints.",
   action: { label: "View all projects", to: "/portfolio" },
   viewLabel: "View project",   // text in the hover pill
-  projects: [
-    {
-      title: "CRM Dashboard System",
-      category: "Full Stack Java Application",
-      year: "2024",
-      image: imgCrm,
-      tags: ["Spring Boot", "React", "MySQL", "JWT"],
-      to: "/portfolio",
-    },
-    {
-      title: "Job Portal Platform",
-      category: "React + Spring Boot",
-      year: "2024",
-      image: imgJob,
-      tags: ["React", "Spring Boot", "REST API"],
-      to: "/portfolio",
-    },
-    {
-      title: "Developer Portfolio",
-      category: "MERN / React Application",
-      year: "2023",
-      image: imgProfile,
-      tags: ["React", "Tailwind", "Framer Motion"],
-      to: "/portfolio",
-    },
-  ],
-};
+  // Slugs from PORTFOLIO.projects (section 9). The first one is shown large.
+  featured: ["xamify-crm", "skillbridge", "developer-portfolio"],
+}
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -552,31 +542,279 @@ export const TESTIMONIALS = {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   9. PORTFOLIO PAGE — ALL PROJECTS
-   `category` must match one of the `filters` (except "All").
+   9. PORTFOLIO PAGE — ALL PROJECTS (+ each project's detail page)
+   Every project gets its own page at /portfolio/<slug>.
+   Only `slug`, `title`, `category` and `cover` are required — every other
+   field is optional, and any section you leave out simply isn't shown.
+
+   • slug         the URL name: lowercase-with-dashes, unique
+   • category     must match one of `filters` (except "All")
+   • type         one-line description shown under the title
+   • links        { live: "https://…", github: "https://…" } — "" hides a button
+   • stack        technologies used (shown as tags)
+   • overview / challenge / solution   paragraphs; *word* adds a highlight
+   • features     bullet list
+   • results      big numbers: [{ value: "40%", label: "Faster" }]
+   • screenshots  gallery — import images at the top of this file:
+                  [{ src: myImage, caption: "Admin dashboard" }]
+                  Visitors can click a screenshot to view it full size.
 ═══════════════════════════════════════════════════════════════════════════ */
 export const PORTFOLIO = {
   eyebrow: "Portfolio",
   title: "Things I've *built*",
   intro: "Explore my latest projects and see how I've helped businesses transform their digital presence and achieve ambitious goals.",
   stats: [
-    { value: "8+", label: "Projects" },
-    { value: "4+", label: "Categories" },
+    { value: "13", label: "Projects" },
+    { value: "4",  label: "Categories" },
     { value: "3+", label: "Years" },
   ],
-  filters: ["All", "Web Design", "Mobile App", "Brand Identity", "UI/UX"],
+  filters: ["All", "Full Stack", "EdTech", "Web Apps", "Websites & Tools"],
   emptyText: "No projects in this category yet.",
+  viewLabel: "View project",
+
+  // Labels used on every project detail page
+  detail: {
+    back: "All projects",
+    eyebrow: "Case study",
+    meta: { type: "Type", year: "Year", role: "Role", client: "Client", duration: "Duration", status: "Status" },
+    sections: {
+      overview: "Overview",
+      challenge: "The challenge",
+      solution: "The solution",
+      features: "Key features",
+      stack: "Tech stack",
+      results: "Results",
+      screenshots: "Screenshots",
+    },
+    live: "Visit live site",
+    github: "View source",
+    prev: "Previous project",
+    next: "Next project",
+    contact: { text: "Want something like this built — or taught to your team?", label: "Start a conversation", to: "/contact" },
+    notFound: { title: "This project *doesn't exist*.", text: "It may have been renamed or removed.", label: "See all projects" },
+  },
+
   projects: [
-    { title: "Xamify CRM",      image: imgCrm,        category: "UI/UX",          year: "2024", tag: "Live product" },
-    { title: "SkillBridge App", image: imgJob,        category: "Mobile App",     year: "2024", tag: "Case study" },
-    { title: "Book Shelf",      image: imgNotes,      category: "Brand Identity", year: "2023", tag: "Branding" },
-    { title: "BusTrack SaaS",   image: imgQuiz,       category: "Web Design",     year: "2024", tag: "Web app" },
-    { title: "Transit Hub",     image: imgAdminMcq,   category: "Mobile App",     year: "2023", tag: "Mobile" },
-    { title: "AI Learning",     image: imgExplain,    category: "Web Design",     year: "2024", tag: "Platform" },
-    { title: "SkillBridge v2",  image: imgAlgo1,      category: "UI/UX",          year: "2024", tag: "Redesign" },
-    { title: "Transit Brand",   image: imgCodeEditor, category: "Brand Identity", year: "2023", tag: "Identity" },
-    { title: "Transit Brand",   image: imgAlgo2,      category: "Brand Identity", year: "2023", tag: "Identity" },
-    { title: "Transit Brand",   image: imgVv,         category: "Brand Identity", year: "2023", tag: "Identity" },
+    {
+      slug: "xamify-crm",
+      title: "Xamify",
+      type: "Training management CRM",
+      category: "Full Stack",
+      year: "2024",
+      status: "Live",
+      cover: imgCrm,
+      summary: "An admin dashboard for running a training institute — trainers, students, colleges, batches, courses, quizzes and payments in one place.",
+      links: { live: "", github: "" },
+      stack: ["Spring Boot", "React", "MySQL", "JWT"],
+      overview: "Xamify brings the day-to-day operations of a training institute into a *single dashboard*. Admins see active students, running and completed batches, courses and quizzes at a glance, and manage everything from one sidebar.",
+      features: [
+        "At-a-glance dashboard: active students, active and completed batches, courses and quizzes",
+        "Trainer profiles with contact details",
+        "Student, college and batch management",
+        "Courses, assignments and attendance tracking",
+        "Quiz scheduling with an upcoming-quizzes panel",
+        "Messages, notifications and payments modules",
+      ],
+      screenshots: [{ src: imgCrm, caption: "Admin dashboard" }],
+    },
+    {
+      slug: "skillbridge",
+      title: "SkillBridge",
+      type: "Job portal platform",
+      category: "Full Stack",
+      year: "2024",
+      status: "Live",
+      cover: imgJob,
+      summary: "Full-stack job portal connecting developers with opportunities via smart skill-based matching.",
+      links: { live: "", github: "" },
+      stack: ["React", "Spring Boot", "MySQL", "JWT Auth", "REST API"],
+      overview: "SkillBridge is a job-matching platform built for developers. Candidates upload profiles, take skill assessments, and get matched with roles posted by verified companies — no more spray-and-pray applications.",
+      challenge: "Traditional portals required candidates to manually apply to hundreds of roles while companies drowned in unfiltered applications. Both sides wasted enormous time with zero quality filtering.",
+      solution: "Built a smart matching engine using skill-tag intersection scoring, a Spring Boot REST backend, lazy-loading React SPA, and a JWT-secured multi-tenant auth system with separate Candidate and Recruiter dashboards.",
+      features: [
+        "Smart skill-based job-matching algorithm",
+        "Separate dashboards for candidates and recruiters",
+        "Resume upload and auto-parsing",
+        "Kanban-style application pipeline tracker",
+        "Company profile and job-posting management",
+        "Real-time notification system",
+        "Admin panel for platform moderation",
+      ],
+      results: [
+        { value: "3",   label: "User roles" },
+        { value: "95%", label: "Match accuracy" },
+        { value: "2×",  label: "Hire rate lift" },
+        { value: "40%", label: "Time-to-hire cut" },
+      ],
+      screenshots: [
+        { src: imgJob, caption: "Job search with filters — dark theme" },
+        { src: imgJobList, caption: "Job search — light theme" },
+        { src: imgJobProfile, caption: "Candidate profile & applications" },
+      ],
+    },
+    {
+      slug: "xplore-mcq-platform",
+      title: "Xplore MCQ Platform",
+      type: "Online assessment platform",
+      category: "EdTech",
+      year: "2026",
+      cover: imgMcqHome,
+      summary: "Test your skills with comprehensive MCQs across technical, aptitude, logical and English topics.",
+      links: { live: "", github: "" },
+      features: [
+        "Topic-wise tests: technical, aptitude, logical and English",
+        "Timed quizzes with a question navigator",
+        "Admin dashboard for categories, questions, quizzes and students",
+        "Student management with search and department filters",
+      ],
+      screenshots: [
+        { src: imgMcqHome, caption: "Landing page" },
+        { src: imgMcqQuiz, caption: "Quiz with question navigator" },
+        { src: imgMcqAdmin, caption: "Admin dashboard" },
+        { src: imgMcqStudents, caption: "Student management" },
+      ],
+    },
+    {
+      slug: "xplore-coding-contest",
+      title: "Xplore Coding Contest 2026",
+      type: "Coding contest platform",
+      category: "EdTech",
+      year: "2026",
+      cover: imgContestStart,
+      summary: "Solve real-world coding challenges using your own logic, speed and problem-solving skills.",
+      links: { live: "", github: "" },
+      features: [
+        "In-browser code editor beside the problem statement",
+        "Time-bound contest rounds",
+        "Skill-based challenges with examples and test cases",
+      ],
+      screenshots: [
+        { src: imgContestHome, caption: "Contest welcome screen" },
+        { src: imgContestStart, caption: "Start screen" },
+        { src: imgContestEditor, caption: "Problem & code editor" },
+      ],
+    },
+    {
+      slug: "algoprep",
+      title: "AlgoPrep",
+      type: "Interview preparation platform",
+      category: "EdTech",
+      cover: imgAlgo1,
+      summary: "Ace interviews, land the job — practise top interview coding questions with detailed solutions and approaches.",
+      links: { live: "", github: "" },
+      screenshots: [
+        { src: imgAlgo1, caption: "Landing page" },
+        { src: imgAlgo2, caption: "Problem list by difficulty" },
+      ],
+    },
+    {
+      slug: "explain-it-back",
+      title: "Explain It Back",
+      type: "AI-powered learning app",
+      category: "EdTech",
+      cover: imgExplain,
+      summary: "Master any subject by teaching it back to AI — it spots the gaps in your understanding and helps you learn faster.",
+      links: { live: "", github: "" },
+      features: [
+        "Explain a concept in your own words",
+        "AI analysis report with an understanding score",
+        "See what you got right and what you missed",
+      ],
+      screenshots: [
+        { src: imgExplain, caption: "Landing page" },
+        { src: imgExplain2, caption: "Explanation & analysis report" },
+      ],
+    },
+    {
+      slug: "notesshare",
+      title: "NotesShare",
+      type: "Notes sharing platform",
+      category: "Web Apps",
+      cover: imgNotes1,
+      summary: "A platform where admins share educational notes and students access them instantly — download, learn and excel.",
+      links: { live: "", github: "" },
+      screenshots: [
+        { src: imgNotes1, caption: "Landing page" },
+        { src: imgNotes2, caption: "Notes library" },
+      ],
+    },
+    {
+      slug: "busbuddy",
+      title: "BusBuddy",
+      type: "Bus ticket booking",
+      category: "Web Apps",
+      cover: imgBus10,
+      summary: "Bus ticket booking with seat selection and journey details.",
+      links: { live: "", github: "" },
+      screenshots: [
+        { src: imgBus10, caption: "Seat selection" },
+        { src: imgBus3, caption: "Services overview" },
+      ],
+    },
+    {
+      slug: "student-dashboard",
+      title: "Student Performance Dashboard",
+      type: "Academic analytics",
+      category: "Web Apps",
+      cover: imgStudentDash,
+      summary: "A student's attendance, academic scores and assignment status at a glance.",
+      links: { live: "", github: "" },
+      screenshots: [{ src: imgStudentDash, caption: "Performance dashboard" }],
+    },
+    {
+      slug: "vergevector",
+      title: "VergeVector",
+      type: "Marketing agency website",
+      category: "Websites & Tools",
+      cover: imgVv,
+      summary: "Website for a B2B marketing-automation agency — Marketo-first marketing automation that turns intent into revenue.",
+      links: { live: "", github: "" },
+      screenshots: [{ src: imgVv, caption: "Home page" }],
+    },
+    {
+      slug: "sj-pagehub",
+      title: "SJ PageHub",
+      type: "Book catalogue",
+      category: "Websites & Tools",
+      cover: imgBooks,
+      summary: "A book catalogue listing titles, authors, book numbers and prices.",
+      links: { live: "", github: "" },
+      screenshots: [{ src: imgBooks, caption: "Catalogue" }],
+    },
+    {
+      slug: "password-generator",
+      title: "Strong Password Generator",
+      type: "Utility tool",
+      category: "Websites & Tools",
+      cover: imgPassword,
+      summary: "Generate strong passwords with a custom length and character options.",
+      links: { live: "", github: "" },
+      screenshots: [{ src: imgPassword, caption: "Generator" }],
+    },
+    {
+      slug: "developer-portfolio",
+      title: "Developer Portfolio",
+      type: "Personal portfolio website (previous version)",
+      category: "Websites & Tools",
+      year: "2023",
+      status: "Archived",
+      cover: imgOldPortfolio,
+      summary: "Personal developer portfolio built with React, Tailwind CSS, and Framer Motion.",
+      links: { live: "", github: "" },
+      stack: ["React", "Tailwind CSS", "Framer Motion", "Vite"],
+      overview: "A performant, animated personal portfolio showcasing projects, skills, and corporate training work. Designed with a dark-luxury aesthetic and fully responsive across all breakpoints.",
+      challenge: "Most developer portfolios feel generic — cookie-cutter templates with identical layouts. The goal was a distinctive, memorable experience that communicates both technical depth and design sensibility.",
+      solution: "Committed to a dark-luxury editorial aesthetic with Syne + JetBrains Mono typography, magnetic 3D tilt interactions, per-section accent colours, and cohesive atmospheric backgrounds across every section.",
+      features: [
+        "Magnetic 3D tilt interactions on all cards",
+        "Animated bento grid hero section",
+        "Skills bento with per-skill accent colours",
+        "Portfolio section with filter and reveal system",
+        "FAQ, Testimonials, and Services sections",
+        "Fully responsive across mobile, tablet, desktop",
+      ],
+      screenshots: [{ src: imgOldPortfolio, caption: "Home page" }],
+    },
   ],
 };
 
@@ -944,8 +1182,8 @@ export const GALLERY = {
   intro: "My journey as a developer and trainer — building full-stack applications while guiding students to learn and grow in modern technologies.",
   hint: "Drag to explore · click a photo to open",
   images: [
-    portraitStudio, t1, t2, t3, t4, t5, t6, t7, t8, t10, t11, t12, t13,
-    t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, t26, t27, t28, t29, t30, t31,
+    portraitStudio, t1, t2, t3, t4, t5, t6, t7, t8, t10, t11, t12, 
+    t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, t26, t27, t28, t29, t30, t31, t34, t35, t51
   ].map((src) => ({ src, alt: "Training session" })),
 };
 
@@ -1002,133 +1240,3 @@ export const COMING_SOON = {
   },
   directLabel: "Need something now? Write to me at",
 };
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   21. PROJECT DETAIL PAGES
-   Used by src/pages/ProjectDetails.jsx, which is not linked in the router yet.
-═══════════════════════════════════════════════════════════════════════════ */
-const PRIMARY = "#2563eb";
-const SECONDARY = "#7c3aed";
-const SUCCESS = "#10b981";
-
-export const PROJECT_DETAILS = [
-  {
-    id: "xamify-crm",
-    title: "Xamify CRM",
-    subtitle: "Dashboard System",
-    tagline: "Enterprise CRM for managing clients, leads, operations and real-time analytics — built for scale.",
-    category: "Full Stack Java Application",
-    tag: "Enterprise",
-    year: "2024",
-    status: "Live",
-    accent: PRIMARY,
-    images: [imgCrm, imgCrm, imgCrm],
-    overview: "Xamify is a comprehensive CRM Dashboard built to manage clients, track leads, automate workflows, and provide real-time business intelligence. Designed for mid-to-large enterprise teams with multi-role access and audit-grade security.",
-    challenge: "The client needed a single unified platform to replace five disconnected tools — Excel sheets, email chains, a legacy CRM, a manual invoicing system, and a reporting dashboard — all operating in silos with zero shared data.",
-    solution: "Designed a modular Spring Boot backend with domain-driven architecture, a React frontend with role-based UI rendering, and a MySQL database with optimised indexing for sub-100ms query performance across 500k+ records.",
-    features: [
-      "Role-based access control (Admin / Manager / Sales / Viewer)",
-      "Real-time analytics dashboard with drill-down charts",
-      "Lead lifecycle tracking with automated status updates",
-      "JWT + Redis session management with token rotation",
-      "Full audit log for every critical action",
-      "RESTful API with OpenAPI 3.0 documentation",
-      "Email notification system with templating engine",
-      "One-click export to PDF / Excel",
-    ],
-    techStack: [
-      { name: "React.js",     Icon: Code2,    accent: "#61dafb", cat: "Frontend" },
-      { name: "Spring Boot",  Icon: Layers,   accent: "#6db33f", cat: "Backend"  },
-      { name: "MySQL",        Icon: Database, accent: "#00758f", cat: "Database" },
-      { name: "JWT + Redis",  Icon: Shield,   accent: "#e11d48", cat: "Security" },
-      { name: "REST API",     Icon: Globe,    accent: PRIMARY,   cat: "API"      },
-      { name: "Tailwind CSS", Icon: Zap,      accent: "#38bdf8", cat: "Styling"  },
-    ],
-    metrics: [
-      { val: "500k+",  lbl: "Records handled" },
-      { val: "<100ms", lbl: "Query latency"   },
-      { val: "4",      lbl: "User roles"      },
-      { val: "99.9%",  lbl: "Uptime SLA"      },
-    ],
-    github: "https://github.com/stephenjosephm",
-    live: "#",
-  },
-  {
-    id: "skillbridge",
-    title: "SkillBridge",
-    subtitle: "Job Portal Platform",
-    tagline: "Full-stack job portal connecting developers with opportunities via smart skill-based matching.",
-    category: "React + Spring Boot",
-    tag: "Web App",
-    year: "2024",
-    status: "Live",
-    accent: SECONDARY,
-    images: [imgJob, imgJob, imgJob],
-    overview: "SkillBridge is a job-matching platform built for developers. Candidates upload profiles, take skill assessments, and get matched with roles posted by verified companies — no more spray-and-pray applications.",
-    challenge: "Traditional portals required candidates to manually apply to hundreds of roles while companies drowned in unfiltered applications. Both sides wasted enormous time with zero quality filtering.",
-    solution: "Built a smart matching engine using skill-tag intersection scoring, a Spring Boot REST backend, lazy-loading React SPA, and a JWT-secured multi-tenant auth system with separate Candidate and Recruiter dashboards.",
-    features: [
-      "Smart skill-based job-matching algorithm",
-      "Separate dashboards for candidates and recruiters",
-      "Resume upload and auto-parsing",
-      "Kanban-style application pipeline tracker",
-      "Company profile and job-posting management",
-      "Real-time notification system",
-      "Admin panel for platform moderation",
-    ],
-    techStack: [
-      { name: "React.js",    Icon: Code2,    accent: "#61dafb", cat: "Frontend" },
-      { name: "Spring Boot", Icon: Layers,   accent: "#6db33f", cat: "Backend"  },
-      { name: "MySQL",       Icon: Database, accent: "#00758f", cat: "Database" },
-      { name: "JWT Auth",    Icon: Shield,   accent: "#e11d48", cat: "Security" },
-      { name: "REST API",    Icon: Globe,    accent: PRIMARY,   cat: "API"      },
-    ],
-    metrics: [
-      { val: "3",   lbl: "User roles"       },
-      { val: "95%", lbl: "Match accuracy"   },
-      { val: "2×",  lbl: "Hire rate lift"   },
-      { val: "40%", lbl: "Time-to-hire cut" },
-    ],
-    github: "https://github.com/stephenjosephm",
-    live: "#",
-  },
-  {
-    id: "dev-portfolio",
-    title: "Developer",
-    subtitle: "Portfolio Site",
-    tagline: "Personal developer portfolio built with React, Tailwind CSS, and Framer Motion.",
-    category: "MERN / React Application",
-    tag: "Portfolio",
-    year: "2023",
-    status: "Live",
-    accent: SUCCESS,
-    images: [imgProfile, imgProfile, imgProfile],
-    overview: "A performant, animated personal portfolio showcasing projects, skills, and corporate training work. Designed with a dark-luxury aesthetic and fully responsive across all breakpoints.",
-    challenge: "Most developer portfolios feel generic — cookie-cutter templates with identical layouts. The goal was a distinctive, memorable experience that communicates both technical depth and design sensibility.",
-    solution: "Committed to a dark-luxury editorial aesthetic with Syne + JetBrains Mono typography, magnetic 3D tilt interactions, per-section accent colours, and cohesive atmospheric backgrounds across every section.",
-    features: [
-      "Magnetic 3D tilt interactions on all cards",
-      "Animated bento grid hero section",
-      "Skills bento with per-skill accent colours",
-      "Portfolio section with filter and reveal system",
-      "FAQ, Testimonials, and Services sections",
-      "Fully responsive across mobile, tablet, desktop",
-      "Optimised performance — Lighthouse 95+",
-    ],
-    techStack: [
-      { name: "React.js",      Icon: Code2,  accent: "#61dafb", cat: "Frontend"  },
-      { name: "Tailwind CSS",  Icon: Zap,    accent: "#38bdf8", cat: "Styling"   },
-      { name: "Framer Motion", Icon: Star,   accent: SUCCESS,   cat: "Animation" },
-      { name: "Vite",          Icon: Layers, accent: "#f59e0b", cat: "Build"     },
-    ],
-    metrics: [
-      { val: "95+",  lbl: "Lighthouse score" },
-      { val: "100%", lbl: "Responsive"       },
-      { val: "8+",   lbl: "Sections"         },
-      { val: "0ms",  lbl: "CLS score"        },
-    ],
-    github: "https://github.com/stephenjosephm",
-    live: "#",
-  },
-];

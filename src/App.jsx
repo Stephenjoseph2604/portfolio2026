@@ -16,6 +16,7 @@ import PortfolioSection from "./pages/PortfolioSection";
 import AboutSection from "./pages/AboutSection";
 import TestimonialsSection from "./pages/TestimonialsSection";
 import PortfolioPage from "./pages/PortfolioPage";
+import ProjectDetails from "./pages/ProjectDetails";
 import SkillsSection from "./pages/SkillsBentoGrid1";
 import CertificationsPage from "./pages/Certificationspage";
 import ExperienceEducation from "./pages/Experienceeducation";
@@ -123,6 +124,14 @@ function Site() {
                 <SkillsSection index="03" />
                 <CertificationsPage index="04" />
                 <ExperienceEducation index="05" />
+              </Page>
+            }
+          />
+          <Route
+            path="/portfolio/:slug"
+            element={
+              <Page faqIndex="">
+                <ProjectDetails />
               </Page>
             }
           />
